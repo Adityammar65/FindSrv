@@ -13,6 +13,7 @@
 
     <title>Selamat Datang di FindSrv!</title>
 </head>
+
 <body>
     <div class="glass-bg">
         <div class="container fade-in-fwd">
@@ -22,7 +23,8 @@
                 <p class="lead fw-bold">Jelajahi keterampilan dan potensi yang Anda miliki secara profesional!</p>
                 <p class="lead fw-bold">Bangun pengalaman nyata, hasilkan penghasilan dari keahlianmu, dan mulai perjalanan kariermu hari ini!</p>
                 <hr class="my-5" style="height: 2px;">
-                <a class="btn btn-light btn-lg fw-bold" href="#" role="button" id="welcoming-btn">Mulai</a>
+                <a class="btn btn-light btn-lg fw-bold mx-4" href="<?= base_url('login') ?>?>" role="button" id="welcoming-btn">Login</a>
+                <a class="btn btn-light btn-lg fw-bold mx-4" href="<?= base_url('register') ?>" role="button" id="welcoming-btn">Register</a>
             </div>
             <div id="welcome-footer">
                 <ul class="d-flex flex-row justify-content-center">

@@ -1,5 +1,5 @@
 /*
-    ANIMATION SNIPPETS
+    ANIMATION SNIPPETS & UNIVERSAL PROPERTIES
 */
 
 .fade-in-fwd {
@@ -31,6 +31,12 @@
     transform: translateZ(0);
     opacity: 1;
   }
+}
+
+.glow {
+  -webkit-box-shadow:0px 0px 246px 0px rgba(255,255,255,0.9);
+  -moz-box-shadow: 0px 0px 246px 0px rgba(255,255,255,0.9);
+  box-shadow: 0px 0px 246px 0px rgba(255,255,255,0.9);
 }
 
 /*
@@ -128,4 +134,14 @@ body {
 #welcome-footer ul {
   padding: 0;
   margin: 0;
+}
+
+/*
+  AUTH PAGE
+*/
+
+#auth {
+  background-color: whitesmoke;
+  padding: 16px;
+  border-radius: 16px;
 }
