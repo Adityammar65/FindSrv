@@ -21,7 +21,7 @@
                 <p class="lead fw-bold">FindSrv, sebuah ruang yang hadir untuk membantu Anda tetap produktif</p>
                 <p class="lead fw-bold">Jelajahi keterampilan dan potensi yang Anda miliki secara profesional!</p>
                 <p class="lead fw-bold">Bangun pengalaman nyata, hasilkan penghasilan dari keahlianmu, dan mulai perjalanan kariermu hari ini!</p>
-                <hr class="my-5">
+                <hr class="my-5" style="height: 2px;">
                 <a class="btn btn-light btn-lg fw-bold" href="#" role="button" id="welcoming-btn">Mulai</a>
             </div>
             <div id="welcome-footer">
