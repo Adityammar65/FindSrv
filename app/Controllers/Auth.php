@@ -28,7 +28,7 @@ class Auth extends BaseController
         ];
 
         if ($userModel->insert($data)) {
-            return redirect()->to('/login')->with('success', 'Registrasi Berhasil!');
+            return redirect()->to('/home')->with('success', 'Registrasi Berhasil!');
         } else {
             return redirect()->back()->withInput();
         }

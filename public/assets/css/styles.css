@@ -50,63 +50,14 @@ body {
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #5d9ce9, #2b75d0, #92b2d8);
+  background: linear-gradient(
+  135deg,
+  rgba(255, 255, 255, 1) 0%,
+  rgba(185, 220, 255, 1) 50%,
+  rgba(154, 206, 255, 1) 100%
+  ) !important;
+
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.glass-bg {
-  min-height: 100vh;
-  background: rgba(159, 187, 220, 0.25);
-  backdrop-filter: blur(36px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(120, 190, 255, 0.35);
-  box-shadow: 0 20px 50px rgba(0, 60, 140, 0.35),
-    inset 0 1px 0 rgba(120, 190, 255, 0.4), inset 0 -1px 0 rgba(0, 90, 180, 0.4),
-    inset 0 0 40px 20px rgba(0, 140, 255, 0.6);
-  position: relative;
-  overflow: hidden;
-  animation: fadeIn 1s ease-out both;
-}
-
-.glass-bg::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 15%;
-  right: 15%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(160, 220, 255, 0.8),
-    transparent
-  );
-}
-
-.glass-bg::after {
-  content: "";
-  position: absolute;
-  top: 10%;
-  left: 0;
-  width: 1px;
-  height: 80%;
-  background: linear-gradient(
-    180deg,
-    rgba(160, 220, 255, 0.7),
-    transparent,
-    rgba(0, 140, 255, 0.5)
-  );
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 #welcoming-btn {
@@ -118,10 +69,6 @@ body {
   transform: scale(1.05);
 }
 
-#welcome-footer ul li {
-  list-style: none;
-}
-
 #welcome-footer ul li a {
   display: inline-block;
   transition: transform 0.3s ease;
@@ -129,11 +76,6 @@ body {
 
 #welcome-footer ul li a:hover {
   transform: scale(1.05);
-}
-
-#welcome-footer ul {
-  padding: 0;
-  margin: 0;
 }
 
 /*
@@ -144,4 +86,9 @@ body {
   background-color: whitesmoke;
   padding: 16px;
   border-radius: 16px;
+  position: relative;
 }
+
+/*
+  HOMEPAGE
+*/
