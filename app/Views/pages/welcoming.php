@@ -15,15 +15,19 @@
 <body>
     <div>
         <div class="container fade-in-fwd">
+            
+            <!-- JUMBOTRON -->
             <div class="jumbotron m-5 p-5 text-center">
                 <h1 class="display-4 fw-bold py-4">Selamat Datang!</h1>
                 <p class="lead fw-bold">FindSrv, sebuah ruang yang hadir untuk membantu Anda tetap produktif</p>
                 <p class="lead fw-bold">Jelajahi keterampilan dan potensi yang Anda miliki secara profesional!</p>
                 <p class="lead fw-bold">Bangun pengalaman nyata, hasilkan penghasilan dari keahlianmu, dan mulai perjalanan kariermu hari ini!</p>
                 <hr class="my-5" style="height: 2px;">
-                <a class="btn btn-primary btn-lg fw-bold mx-4" href="<?= base_url('login') ?>?>" role="button" id="welcoming-btn">Login</a>
+                <a class="btn btn-primary btn-lg fw-bold mx-4" href="<?= base_url('login') ?>" role="button" id="welcoming-btn">Login</a>
                 <a class="btn btn-primary btn-lg fw-bold mx-4" href="<?= base_url('register') ?>" role="button" id="welcoming-btn">Register</a>
             </div>
+
+            <!-- FOOTER -->
             <div id="welcome-footer">
                 <ul class="d-flex flex-row justify-content-center list-unstyled">
                     <li class="px-4">

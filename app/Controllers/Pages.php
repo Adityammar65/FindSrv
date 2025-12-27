@@ -9,8 +9,13 @@ class Pages extends BaseController
         return view('pages/welcoming');
     }
 
-    public function home(): string
+    public function home_pengguna(): string
     {
-        return view('pages/homepage');
+        return view('pages/pengguna/homepage_pengguna');
+    }
+    
+    public function home_penyedia(): string
+    {
+        return view('pages/penyedia/homepage_penyedia');
     }
 }

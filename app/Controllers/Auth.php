@@ -28,7 +28,11 @@ class Auth extends BaseController
         ];
 
         if ($userModel->insert($data)) {
-            return redirect()->to('/home')->with('success', 'Registrasi Berhasil!');
+            if($data['role'] == 'pengguna') {
+                return redirect()->to('/home_pengguna');
+            } else {
+                return redirect()->to('/home_penyedia');
+            }   
         } else {
             return redirect()->back()->withInput();
         }
@@ -37,36 +41,36 @@ class Auth extends BaseController
     public function loginProcess()
     {
         $session = session();
-        $model = new UserModel();
+        $model   = new UserModel();
 
-        $identifier = $this->request->getPost('identifier');
-        $password = $this->request->getPost('password');
+        $identifier = trim($this->request->getPost('identifier'));
+        $password   = trim($this->request->getPost('password'));
 
-        $user = $model->where('email', $identifier)->first();
+        $user = $model->where('email', $identifier)
+                    ->orWhere('username', $identifier)
+                    ->first();
 
-        if ($user) {
-            if (password_verify($password, $user['password'])) {
-                $sessionData = [
-                    'id_user'=> $user['id_user'],
-                    'username'=> $user['username'],
-                    'email'=> $user['email'],
-                    'role'=> $user['role'],
-                    'isLoggedIn' => true
-                ];
-                $session->set($sessionData);
-
-                if ($user['role'] == 'penyedia') {
-                    return redirect()->to('/dashboard')->with('msg', 'Selamat datang di Dashboard Analytic');
-                } else {
-                    return redirect()->to('/rekomendasi');
-                }
-
-            } else {
-                return redirect()->back()->with('error', 'Password Salah');
-            }
-        } else {
-            return redirect()->back()->with('error', 'Email tidak ditemukan');
+        if (!$user) {
+            return redirect()->back()->with('error', 'Email / Username salah');
         }
+
+        if (!password_verify($password, $user['password'])) {
+            return redirect()->back()->with('error', 'Password salah!');
+        }
+
+        $session->set([
+            'id_user'     => $user['id_user'],
+            'username'    => $user['username'],
+            'email'       => $user['email'],
+            'role'        => $user['role'],
+            'isLoggedIn'  => true
+        ]);
+
+        return redirect()->to(
+            $user['role'] == 'penyedia'
+            ? '/home_penyedia'
+            : '/home_pengguna'
+        );
     }
 
     public function logout()

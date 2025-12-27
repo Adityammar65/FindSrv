@@ -12,10 +12,12 @@
     <title>Register</title>
 </head>
 <body>
-    <div class="glass-bg d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
         <div class="container fade-in-fwd">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-4 glow" id="auth">
+                    
+                    <!-- REGISTER FORM -->
                     <form action="<?= base_url('auth/saveRegister') ?>" method="post" class="d-flex flex-column">
                         <label class="fw-bold">Username</label>
                         <input name="username" type="text" class="form-control my-2" placeholder="Username" required>

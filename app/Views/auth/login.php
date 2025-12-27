@@ -12,10 +12,12 @@
     <title>Login</title>
 </head>
 <body>
-    <div class="glass-bg d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
         <div class="container fade-in-fwd">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-4 glow" id="auth">
+
+                    <!-- LOGIN FORM -->
                     <form action="<?= base_url('auth/loginProcess') ?>" method="post" class="d-flex flex-column">
                         <label class="fw-bold">Email / Username</label>
                         <input name="identifier" type="text" class="form-control my-2" placeholder="Email / Username" required>

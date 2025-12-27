@@ -13,6 +13,8 @@
 </head>
 <body>
     <div class="container-fluid fade-in-fwd p-0">
+        
+        <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%;">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Navbar</a>
