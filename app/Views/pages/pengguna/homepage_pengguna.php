@@ -1,3 +1,16 @@
+<?php
+$session = session();
+
+$username = $session->get('username');
+$email    = $session->get('email');
+$photo    = $session->get('foto_profil');
+
+$profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
+    ? base_url('uploads/profile/' . $photo)
+    : base_url('assets/images/icons/profile.png');
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +24,54 @@
 
     <title>Beranda</title>
 </head>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Profil Pengguna</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body text-center">
+
+        <img src="<?= $profilePhoto ?>"
+            alt="User Profile"
+            class="rounded-circle"
+            width="60"
+            height="60"
+            style="object-fit: cover;">
+
+        <h6 class="fw-bold"><?= esc($username) ?></h6>
+        <p class="text-muted"><?= esc($email) ?></p>
+
+        <hr>
+
+        <ul class="list-group list-group-flush text-start">
+            <li class="list-group-item">
+                <a href="<?= base_url('profile') ?>" class="text-decoration-none text-dark">
+                    Profil Saya
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="<?= base_url('pengaturan') ?>" class="text-decoration-none text-dark">
+                    Pengaturan
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="<?= base_url('logout') ?>" class="text-danger fw-bold text-decoration-none">
+                    Logout
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</div>
+
 <body>
     <div class="container-fluid fade-in-fwd p-0">
         
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold" style="width: 100%;">
-            <div class="container-fluid mx-5 my-3">
+            <div class="container-fluid mx-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
@@ -39,6 +94,16 @@
                         <input class="form-control me-2" type="search" placeholder="Cari Jasa" aria-label="Cari Jasa" style="width: 300px;">
                         <button class="btn fw-bold btn-primary px-4" type="submit">Cari</button>
                     </form>
+                    <div class="profile-sidepanel">
+                        <button type="button" class="btn p-0" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
+                            <img src="<?= $profilePhoto ?>"
+                                alt="User Profile"
+                                class="rounded-circle"
+                                width="60"
+                                height="60"
+                                style="object-fit: cover;">
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>

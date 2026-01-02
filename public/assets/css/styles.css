@@ -217,3 +217,17 @@ body {
     0 0 20px rgba(255, 255, 255, 0.4),
     0 0 40px rgba(255, 255, 255, 0.25);
 }
+
+/* 
+  PROFILE DASHBOARD 
+*/
+
+.sidebar-item {
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+  background: rgba(255,255,255,.2);
+}

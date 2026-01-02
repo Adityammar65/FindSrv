@@ -6,6 +6,8 @@ use App\Models\UserModel;
 
 class Auth extends BaseController
 {
+    /* ================= VIEW ================= */
+
     public function login(): string
     {
         return view('auth/login');
@@ -16,27 +18,43 @@ class Auth extends BaseController
         return view('auth/register');
     }
 
+    /* ================= REGISTER ================= */
+
     public function saveRegister()
     {
         $userModel = new UserModel();
 
         $data = [
-            'username'=> $this->request->getPost('username'),
-            'email'=> $this->request->getPost('email'),
-            'password'=> password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role'=> $this->request->getPost('role'),
+            'username' => $this->request->getPost('username'),
+            'email'    => $this->request->getPost('email'),
+            'password' => password_hash(
+                $this->request->getPost('password'),
+                PASSWORD_DEFAULT
+            ),
+            'role'     => $this->request->getPost('role'),
         ];
 
-        if ($userModel->insert($data)) {
-            if($data['role'] == 'pengguna') {
-                return redirect()->to('/home_pengguna');
-            } else {
-                return redirect()->to('/home_penyedia');
-            }   
-        } else {
+        if (!$userModel->insert($data)) {
             return redirect()->back()->withInput();
         }
+
+        // Optional: auto login setelah register
+        session()->set([
+            'id_user'    => $userModel->getInsertID(),
+            'username'   => $data['username'],
+            'email'      => $data['email'],
+            'role'       => $data['role'],
+            'isLoggedIn' => true
+        ]);
+
+        return redirect()->to(
+            $data['role'] === 'penyedia'
+            ? '/home_penyedia'
+            : '/home_pengguna'
+        );
     }
+
+    /* ================= LOGIN ================= */
 
     public function loginProcess()
     {
@@ -47,8 +65,8 @@ class Auth extends BaseController
         $password   = trim($this->request->getPost('password'));
 
         $user = $model->where('email', $identifier)
-                    ->orWhere('username', $identifier)
-                    ->first();
+                      ->orWhere('username', $identifier)
+                      ->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Email / Username salah');
@@ -59,19 +77,94 @@ class Auth extends BaseController
         }
 
         $session->set([
-            'id_user'     => $user['id_user'],
-            'username'    => $user['username'],
-            'email'       => $user['email'],
-            'role'        => $user['role'],
-            'isLoggedIn'  => true
+            'id_user'        => $user['id_user'],
+            'username'       => $user['username'],
+            'email'          => $user['email'],
+            'role'           => $user['role'],
+            'foto_profil'  => $user['foto_profil'] ?? null,
+            'isLoggedIn'     => true
         ]);
 
         return redirect()->to(
-            $user['role'] == 'penyedia'
+            $user['role'] === 'penyedia'
             ? '/home_penyedia'
             : '/home_pengguna'
         );
     }
+
+    /* ================= EDIT PROFIL ================= */
+
+    public function editProfile()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login');
+        }
+
+        $user = (new UserModel())->find(session('id_user'));
+
+        return view('auth/edit_profile', ['user' => $user]);
+    }
+
+    public function updateProfile()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new UserModel();
+        $session   = session();
+        $id        = $session->get('id_user');
+
+        $data = [
+            'username' => $this->request->getPost('username'),
+            'email' => $this->request->getPost('email'),
+        ];
+
+        if ($this->request->getPost('password')) {
+            $data['password'] = password_hash(
+                $this->request->getPost('password'),
+                PASSWORD_DEFAULT
+            );
+        }
+
+        $photo = $this->request->getFile('foto_profil');
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            $newName = $photo->getRandomName();
+            $path    = FCPATH . 'uploads/profile/';
+
+            if (!is_dir($path)) {
+                mkdir($path, 0775, true);
+            }
+
+            $photo->move($path, $newName);
+
+            \Config\Services::image()
+                ->withFile($path . $newName)
+                ->fit(300, 300, 'center')
+                ->save($path . $newName);
+
+            $data['foto_profil'] = $newName;
+        }
+
+        $userModel->update($id, $data);
+
+        $updated = $userModel->find($id);
+        $session->set([
+            'username' => $updated['username'],
+            'email' => $updated['email'],
+            'foto_profil' => $updated['foto_profil']
+        ]);
+
+        return redirect()->to(
+            $updated['role'] === 'penyedia'
+            ? '/home_penyedia'
+            : '/home_pengguna'
+        );
+    }
+
+    /* ================= LOGOUT ================= */
 
     public function logout()
     {
