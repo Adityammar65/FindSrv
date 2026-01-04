@@ -153,9 +153,16 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
                                     <div class="d-flex justify-content-between gap-2">
                                         <button
-                                            class="btn btn-outline-primary btn-sm"
+                                            class="btn btn-outline-primary btn-sm edit-jasa-btn w-100"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#editJasaModal<?= $service['id_service'] ?>">
+                                            data-bs-target="#editJasaModal"
+
+                                            data-id="<?= $service['id_service'] ?>"
+                                            data-judul="<?= esc($service['judul_jasa']) ?>"
+                                            data-kategori="<?= esc($service['kategori']) ?>"
+                                            data-deskripsi="<?= esc($service['deskripsi_jasa']) ?>"
+                                            data-gambar="<?= esc($service['gambar_layanan']) ?>"
+                                        >
                                             Edit
                                         </button>
 
@@ -294,7 +301,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <label class="form-label fw-semibold">Gambar Jasa (Opsional)</label>
                             <input
                                 type="file"
-                                name="gambar_jasa"
+                                name="gambar_layanan"
                                 class="form-control"
                                 accept="image/*"
                             >
@@ -324,12 +331,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 </div>
 
 <!-- MODAL EDIT JASA -->
-<?php foreach ($services as $service): ?>
-<div class="modal fade" id="editJasaModal<?= $service['id_service'] ?>" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editJasaModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-4">
 
-            <form action="<?= base_url('jasa/edit/' . $service['id_service']) ?>" method="post">
+            <form id="editJasaForm"
+                  method="post"
+                  enctype="multipart/form-data">
 
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">Edit Jasa</h5>
@@ -337,19 +345,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </div>
 
                 <div class="modal-body">
-
+                
                     <!-- JUDUL -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Judul Jasa</label>
-                        <input
-                            type="text"
-                            name="judul_jasa"
-                            class="form-control"
-                            value="<?= esc($service['judul_jasa']) ?>"
-                            required
-                        >
+                    <div class="mb-3">
+                        <label class="form-label">Judul</label>
+                        <input type="text" name="judul_jasa" id="editJudul" class="form-control" required>
                     </div>
-
+                
                     <!-- KATEGORI -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold mb-2">
@@ -410,34 +412,80 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <?php endforeach ?>
                         </div>
                     </div>
-
+                
                     <!-- DESKRIPSI -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Deskripsi</label>
-                        <textarea
-                            name="deskripsi_jasa"
-                            class="form-control"
-                            rows="6"
-                            required
-                        ><?= esc($service['deskripsi_jasa'] ?? '') ?></textarea>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="deskripsi_jasa"
+                                  id="editDeskripsi"
+                                  rows="5"
+                                  class="form-control"
+                                  required></textarea>
                     </div>
-
+                
+                    <!-- GANTI GAMBAR JASA -->
+                    <div class="mb-3">
+                        <label class="form-label">Ganti Gambar</label>
+                        <img id="previewGambar"
+                             class="img-fluid mb-2 rounded"
+                             style="max-height:120px; display:none;">
+                        <input type="file"
+                               name="gambar_layanan"
+                               class="form-control"
+                               accept="image/*">
+                    </div>
                 </div>
 
+                <!-- FOOTER -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-                    <button type="submit" class="btn btn-primary px-4 fw-bold">
-                        Simpan Perubahan
+                    <button type="submit" class="btn btn-primary fw-bold px-4">
+                        Simpan
                     </button>
                 </div>
-
             </form>
-
         </div>
     </div>
 </div>
-<?php endforeach; ?>
+
+<script>
+const editModal = document.getElementById('editJasaModal');
+
+editModal.addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+
+    const id        = btn.getAttribute('data-id');
+    const judul     = btn.getAttribute('data-judul');
+    const deskripsi = btn.getAttribute('data-deskripsi');
+    const kategori  = btn.getAttribute('data-kategori');
+    const gambar    = btn.getAttribute('data-gambar');
+
+    const form = document.getElementById('editJasaForm');
+    form.action = `<?= base_url('jasa/edit') ?>/${id}`;
+
+    document.getElementById('editJudul').value = judul;
+    document.getElementById('editDeskripsi').value = deskripsi;
+
+    document.querySelectorAll('#editJasaModal input[name="kategori[]"]').forEach(cb => {
+        cb.checked = false;
+    });
+
+    if (kategori) {
+        kategori.split(',').forEach(kat => {
+            const checkbox = document.querySelector(
+                `#editJasaModal input[value="${kat.trim()}"]`
+            );
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    const preview = document.getElementById('previewGambar');
+    if (gambar) {
+        preview.src = `<?= base_url('uploads/jasa') ?>/${gambar}`;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+    }
+});
+</script>
 
 </html>

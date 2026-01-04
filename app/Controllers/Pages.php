@@ -55,12 +55,6 @@ class Pages extends BaseController
         return view('pages/penyedia/dashboard_jasa', $data);
     }
 
-    // TAMBAH JASA
-    public function createJasa()
-    {
-        return view('pages/penyedia/create_jasa');
-    }
-
     // SIMPAN JASA
     public function simpanJasa()
     {
@@ -79,11 +73,15 @@ class Pages extends BaseController
             'kategori' => is_array($kategori) ? implode(',', $kategori) : $kategori,
         ];
 
-        $gambar = $this->request->getFile('gambar_jasa');
-        if ($gambar && $gambar->isValid()) {
-            $namaGambar = $gambar->getRandomName();
-            $gambar->move('uploads/jasa', $namaGambar);
-            $data['gambar_layanan'] = $namaGambar;
+        $gambar = $this->request->getFile('gambar_layanan');
+
+        if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            $path = FCPATH . 'uploads/jasa';
+
+            $nama = $gambar->getRandomName();
+            $gambar->move($path, $nama);
+
+            $data['gambar_layanan'] = $nama;
         }
 
         $this->serviceModel->insert($data);
@@ -117,16 +115,19 @@ class Pages extends BaseController
             'deskripsi_jasa' => trim($this->request->getPost('deskripsi_jasa')),
         ];
 
-        $gambar = $this->request->getFile('gambar_jasa');
+        $gambar = $this->request->getFile('gambar_layanan');
         if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            $path = FCPATH . 'uploads/jasa';
 
-            if (!empty($service['gambar_layanan']) &&
-                file_exists(FCPATH . 'uploads/jasa/' . $service['gambar_layanan'])) {
-                unlink(FCPATH . 'uploads/jasa/' . $service['gambar_layanan']);
+            if (!empty($service['gambar_layanan'])) {
+                $oldImage = $path . '/' . $service['gambar_layanan'];
+                if (file_exists($oldImage)) {
+                    unlink($oldImage);
+                }
             }
 
             $namaGambar = $gambar->getRandomName();
-            $gambar->move(FCPATH . 'uploads/jasa', $namaGambar);
+            $gambar->move($path, $namaGambar);
             $data['gambar_layanan'] = $namaGambar;
         }
 
