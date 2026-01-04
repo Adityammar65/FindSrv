@@ -1,0 +1,443 @@
+<?php
+$session = session();
+
+$username = $session->get('username');
+$role = $session->get('role');
+$photo = $session->get('foto_profil');
+
+$profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
+    ? base_url('uploads/profile/' . $photo)
+    : base_url('assets/images/icons/profile.png');
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- STYLESHEET & SCRIPTS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
+
+    <title>Dashboard Jasa</title>
+</head>
+
+<!-- SIDEPANEL -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Profil Pengguna</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body text-center">
+        <img src="<?= $profilePhoto ?>"
+            alt="User Profile"
+            class="rounded-circle"
+            width="60"
+            height="60"
+            style="object-fit: cover;">
+
+        <h6 class="fw-bold"><?= esc($username) ?></h6>
+        <p class="text-muted"><?= esc($role) ?> jasa</p>
+        <hr>
+        <ul class="list-group list-group-flush text-start">
+            <li class="list-group-item">
+                <a href="<?= base_url('pengaturan') ?>" class="text-decoration-none text-dark">
+                    Pengaturan
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a href="<?= base_url('logout') ?>" class="text-danger fw-bold text-decoration-none">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<body>
+    <div class="container-fluid fade-in-fwd p-0">
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold" style="width: 100%;">
+            <div class="container-fluid mx-5">
+                <a class="navbar-brand" href="#">
+                    <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse mx-5 px-5" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('home_penyedia') ?>">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Dashboard Jasa</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#">Riwayat</a>
+                        </li>
+                    </ul>
+                    <div class="profile-sidepanel">
+                        <button type="button" class="btn p-0" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
+                            <img src="<?= $profilePhoto ?>"
+                                alt="User Profile"
+                                class="rounded-circle"
+                                width="60"
+                                height="60"
+                                style="object-fit: cover;">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- DASHBOARD JASA -->
+        <div class="container my-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold">Dashboard Jasa</h3>
+                <button
+                    class="btn btn-primary fw-bold"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalTambahJasa">
+                    + Tambah Jasa
+                </button>
+            </div>
+
+            <?php if (empty($services)): ?>
+                <!-- EMPTY STATE -->
+                <div class="card border-0 shadow-sm text-center p-5">
+                    <img src="<?= base_url('assets/images/icons/empty.png') ?>"
+                        class="mx-auto mb-3"
+                        style="max-width: 150px;">
+
+                    <h5 class="fw-bold">Belum Ada Jasa</h5>
+                    <p class="text-muted">
+                        Kamu belum menambahkan jasa apapun
+                    </p>
+                    <button
+                        class="btn btn-primary fw-bold"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalTambahJasa">
+                        Tambah Jasa
+                    </button>
+                </div>
+
+            <?php else: ?>
+                <!-- CARD JASA -->
+                <div class="row g-4">
+                    <?php foreach ($services as $service): ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm border-0 rounded-4">
+
+                                <img src="<?= $service['gambar_layanan']
+                                    ? base_url('uploads/jasa/' . $service['gambar_layanan'])
+                                    : base_url('assets/images/default-service.jpg') ?>"
+                                    class="card-img-top rounded-top-4"
+                                    style="height: 200px; object-fit: cover;">
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="fw-bold">
+                                        <?= esc($service['judul_jasa']) ?>
+                                    </h5>
+
+                                    <p class="text-muted small mb-3">
+                                        <?= esc($service['kategori']) ?>
+                                    </p>
+
+                                    <p class="flex-grow-1">
+                                        <?= esc(word_limiter($service['deskripsi_jasa'], 20)) ?>
+                                    </p>
+
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <button
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editJasaModal<?= $service['id_service'] ?>">
+                                            Edit
+                                        </button>
+
+                                        <a href="<?= base_url('jasa/delete' . $service['id_service']) ?>"
+                                        class="btn btn-outline-danger w-100 fw-bold"
+                                        onclick="return confirm('Yakin ingin menghapus jasa ini?')">
+                                            Hapus
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</body>
+                    
+<!-- MODAL TAMBAH JASA -->
+<div class="modal fade" id="modalTambahJasa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Tambah Jasa Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- FORM -->
+            <form
+                action="<?= base_url('jasa/simpan') ?>"
+                method="post"
+                enctype="multipart/form-data"
+            >
+                <div
+                    class="modal-body jasa-scrollspy"
+                    data-bs-spy="scroll"
+                    data-bs-offset="0"
+                    tabindex="0"
+                >
+                    <!-- JUDUL -->
+                    <section id="judul">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Judul Jasa</label>
+                            <input
+                                type="text"
+                                name="judul_jasa"
+                                class="form-control"
+                                required
+                            >
+                        </div>
+                    </section>
+
+                    <!-- KATEGORI -->
+                    <section id="kategori">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold mb-2">
+                                Kategori Jasa <span class="text-muted">(Pilih maksimal 3)</span>
+                            </label>
+
+                            <div class="row">
+                                <?php
+                                $categories = [
+                                    'Web Development',
+                                    'Software Development',
+                                    'Mobile App Development',
+                                    'WordPress & CMS',
+                                    'UI / UX Design',
+
+                                    'Graphic Design',
+                                    'Logo & Branding',
+                                    'Illustration',
+                                    'Motion Graphic',
+                                    '3D Design',
+
+                                    'Content Writing',
+                                    'Copywriting',
+                                    'Technical Writing',
+                                    'Translation',
+
+                                    'Digital Marketing',
+                                    'SEO / SEM',
+                                    'Social Media Management',
+                                    'Business Consulting',
+
+                                    'Video Editing',
+                                    'Voice Over',
+                                    'Audio Production',
+
+                                    'Data Entry',
+                                    'Virtual Assistant',
+                                    'Customer Support',
+                                    'Project Management',
+                                ];
+
+                                foreach ($categories as $cat):
+                                ?>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="kategori[]"
+                                                value="<?= $cat ?>"
+                                                id="cat-<?= md5($cat) ?>"
+                                            >
+                                            <label class="form-check-label" for="cat-<?= md5($cat) ?>">
+                                                <?= $cat ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- DESKRIPSI -->
+                    <section id="deskripsi">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Deskripsi Jasa</label>
+                            <textarea
+                                name="deskripsi_jasa"
+                                rows="6"
+                                class="form-control"
+                                required
+                            ></textarea>
+                        </div>
+                    </section>
+
+                    <!-- GAMBAR -->
+                    <section id="gambar">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Gambar Jasa (Opsional)</label>
+                            <input
+                                type="file"
+                                name="gambar_jasa"
+                                class="form-control"
+                                accept="image/*"
+                            >
+                        </div>
+                    </section>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary fw-bold px-4">
+                        Simpan Jasa
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT JASA -->
+<?php foreach ($services as $service): ?>
+<div class="modal fade" id="editJasaModal<?= $service['id_service'] ?>" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <form action="<?= base_url('jasa/edit/' . $service['id_service']) ?>" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Edit Jasa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- JUDUL -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Judul Jasa</label>
+                        <input
+                            type="text"
+                            name="judul_jasa"
+                            class="form-control"
+                            value="<?= esc($service['judul_jasa']) ?>"
+                            required
+                        >
+                    </div>
+
+                    <!-- KATEGORI -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold mb-2">
+                            Kategori Jasa <span class="text-muted">(Pilih maksimal 3)</span>
+                        </label>
+
+                        <div class="row">
+                            <?php
+                            $categories = [
+                                'Web Development',
+                                'Software Development',
+                                'Mobile App Development',
+                                'WordPress & CMS',
+                                'UI / UX Design',
+
+                                'Graphic Design',
+                                'Logo & Branding',
+                                'Illustration',
+                                'Motion Graphic',
+                                '3D Design',
+
+                                'Content Writing',
+                                'Copywriting',
+                                'Technical Writing',
+                                'Translation',
+
+                                'Digital Marketing',
+                                'SEO / SEM',
+                                'Social Media Management',
+                                'Business Consulting',
+
+                                'Video Editing',
+                                'Voice Over',
+                                'Audio Production',
+
+                                'Data Entry',
+                                'Virtual Assistant',
+                                'Customer Support',
+                                'Project Management',
+                            ];
+
+                            foreach ($categories as $cat):
+                            ?>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="kategori[]"
+                                            value="<?= $cat ?>"
+                                            id="cat-<?= md5($cat) ?>"
+                                        >
+                                        <label class="form-check-label" for="cat-<?= md5($cat) ?>">
+                                            <?= $cat ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+
+                    <!-- DESKRIPSI -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Deskripsi</label>
+                        <textarea
+                            name="deskripsi_jasa"
+                            class="form-control"
+                            rows="6"
+                            required
+                        ><?= esc($service['deskripsi_jasa'] ?? '') ?></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<?php endforeach; ?>
+
+</html>

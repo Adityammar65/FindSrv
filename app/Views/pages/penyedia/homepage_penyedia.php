@@ -2,8 +2,8 @@
 $session = session();
 
 $username = $session->get('username');
-$email    = $session->get('email');
-$photo    = $session->get('foto_profil');
+$role = $session->get('role');
+$photo = $session->get('foto_profil');
 
 $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     ? base_url('uploads/profile/' . $photo)
@@ -25,14 +25,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <title>Beranda</title>
 </head>
 
+<!-- SIDEPANEL -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title">Profil Pengguna</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-
     <div class="offcanvas-body text-center">
-
         <img src="<?= $profilePhoto ?>"
             alt="User Profile"
             class="rounded-circle"
@@ -41,16 +40,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             style="object-fit: cover;">
 
         <h6 class="fw-bold"><?= esc($username) ?></h6>
-        <p class="text-muted"><?= esc($email) ?></p>
-
+        <p class="text-muted"><?= esc($role) ?> jasa</p>
         <hr>
-
         <ul class="list-group list-group-flush text-start">
-            <li class="list-group-item">
-                <a href="<?= base_url('profile') ?>" class="text-decoration-none text-dark">
-                    Profil Saya
-                </a>
-            </li>
             <li class="list-group-item">
                 <a href="<?= base_url('pengaturan') ?>" class="text-decoration-none text-dark">
                     Pengaturan
@@ -62,7 +54,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </a>
             </li>
         </ul>
-
     </div>
 </div>
 
@@ -84,16 +75,12 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <a class="nav-link active" aria-current="page" href="#">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Cari Jasa</a>
+                            <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard Jasa  </a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat</a>
                         </li>
                     </ul>
-                    <form class="d-flex mx-5 px-5">
-                        <input class="form-control me-2" type="search" placeholder="Cari Jasa" aria-label="Cari Jasa" style="width: 300px;">
-                        <button class="btn fw-bold btn-primary px-4" type="submit">Cari</button>
-                    </form>
                     <div class="profile-sidepanel">
                         <button type="button" class="btn p-0" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
                             <img src="<?= $profilePhoto ?>"
@@ -110,10 +97,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
         <!-- BANNER -->
         <div class="img-container my-4">
-            <img src="<?= base_url('assets/images/homepage/homepage_illustration.jpg') ?>">
+            <img src="<?= base_url('assets/images/homepage/homepage_illustration_penyedia.jpeg') ?>">
             <div class="fade-text">
                 <p>Selamat Datang di FindSrv!</p>
-                <p class="fs-4 my-3">Akses berbagai layanan profesional dengan proses yang cepat dan aman</p>
+                <p class="fs-4 my-3">Punya keahlian menarik? Yuk, tawarkan jasa Anda di FindSrv dan nikmati kemudahan bertransaksi secara aman dengan konsumen</p>
             </div>
         </div>
 
@@ -168,35 +155,35 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <!-- BUSINESS PROCESS -->
         <div class="business-process my-5">
             <h3 class="text-center glass-bg py-5 mb-5">Bagaimana FindSrv Bekerja</h3>
-            <p class="text-center fs-4 fw-bold text-primary">Proses mudah untuk menemukan layanan profesional sesuai kebutuhan Anda</p>
+            <p class="text-center fs-4 fw-bold text-primary">Proses mudah untuk menawarkan layanan profesional Anda</p>
 
             <div class="container d-flex flex-row justify-content-center my-5">
                 <div class="card card-process bg-primary bg-gradient mx-4 py-2" style="width: 18rem;">
                     <div class="card-body text-center text-light">
                         <h3 class="fw-bold my-3">1</h3>
-                        <h5 class="card-title">Cari Jasa</h5>
-                        <p class="card-text">Temukan layanan jasa sesuai kebutuhan Anda</p>
+                        <h5 class="card-title">Lengkapi Profilmu</h5>
+                        <p class="card-text">Tampilkan keahlian terbaik Anda dengan unggah jasa untuk menarik minat konsumen</p>
                     </div>
                 </div>
                 <div class="card card-process bg-primary bg-gradient mx-4 py-2" style="width: 18rem;">
                     <div class="card-body text-center text-light">
                         <h3 class="fw-bold my-3">2</h3>
-                        <h5 class="card-title">Review Penyedia Jasa</h5>
-                        <p class="card-text">Review profil dan ulasan penyedia jasa</p>
+                        <h5 class="card-title">Buat Penawaran</h5>
+                        <p class="card-text">Tentukan jenis layanan, harga, dan estimasi waktu kerja yang transparan</p>
                     </div>
                 </div>
                 <div class="card card-process bg-primary bg-gradient mx-4 py-2" style="width: 18rem;">
                     <div class="card-body text-center text-light">
                         <h3 class="fw-bold my-3">3</h3>
-                        <h5 class="card-title">Diskusi dan Pesan</h5>
-                        <p class="card-text">Lakukan komunikasi dan negosiasi sebelum melakukan pemesanan</p>
+                        <h5 class="card-title">Diskusi dan Negosiasi</h5>
+                        <p class="card-text">Diskusikan detail proyek dan lakukan negosiasi dengan konsumen melalui fitur chat</p>
                     </div>
                 </div>
                 <div class="card card-process bg-primary bg-gradient mx-4 py-2" style="width: 18rem;">
                     <div class="card-body text-center text-light">
                         <h3 class="fw-bold my-3">4</h3>
-                        <h5 class="card-title">Selesaikan dan Ulas</h5>
-                        <p class="card-text">Terima hasil dan beri ulasan</p>
+                        <h5 class="card-title">Selesaikan dan Terima Ulasan</h5>
+                        <p class="card-text">Serahkan hasil pekerjaan dan terima pembayaran serta ulasan dari konsumen</p>
                     </div>
                 </div>
             </div>
@@ -206,14 +193,14 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <section class="bg-primary bg-gradient text-white py-5">
             <div class="container text-center">
                 <h3 class="fw-bold mb-3">
-                    Siap Menemukan Jasa Profesional Terbaik?
+                    Siap Mengembangkan Karier Profesional Anda?                
                 </h3>
                 <p class="mb-4 fs-5">
-                    Temukan layanan yang cepat, aman, dan terpercaya hanya di FindSrv
+                    Tawarkan keahlian Anda dan jangkau lebih banyak konsumen di FindSrv
                 </p>
                 <div class="d-flex justify-content-center">
                     <a href="#" class="btn btn-outline-light btn-lg fw-bold px-4 cta-card">
-                        Jelajahi dan Cari Jasa Sekarang
+                        Unggah Jasa Sekarang
                     </a>
                 </div>
             </div>
@@ -234,16 +221,15 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <h6 class="fw-bold">Menu</h6>
                         <ul class="list-unstyled">
                             <li><a href="#" class="text-decoration-none text-muted">Beranda</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Rekomendasi</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Jelajahi Jasa</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 mb-4">
                         <h6 class="fw-bold">Bantuan</h6>
                         <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 mb-4">

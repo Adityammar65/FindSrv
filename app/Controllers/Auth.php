@@ -6,8 +6,6 @@ use App\Models\UserModel;
 
 class Auth extends BaseController
 {
-    /* ================= VIEW ================= */
-
     public function login(): string
     {
         return view('auth/login');
@@ -17,8 +15,6 @@ class Auth extends BaseController
     {
         return view('auth/register');
     }
-
-    /* ================= REGISTER ================= */
 
     public function saveRegister()
     {
@@ -38,7 +34,6 @@ class Auth extends BaseController
             return redirect()->back()->withInput();
         }
 
-        // Optional: auto login setelah register
         session()->set([
             'id_user'    => $userModel->getInsertID(),
             'username'   => $data['username'],
@@ -53,8 +48,6 @@ class Auth extends BaseController
             : '/home_pengguna'
         );
     }
-
-    /* ================= LOGIN ================= */
 
     public function loginProcess()
     {
@@ -91,8 +84,6 @@ class Auth extends BaseController
             : '/home_pengguna'
         );
     }
-
-    /* ================= EDIT PROFIL ================= */
 
     public function editProfile()
     {
@@ -164,11 +155,44 @@ class Auth extends BaseController
         );
     }
 
-    /* ================= LOGOUT ================= */
-
     public function logout()
     {
         session()->destroy();
         return redirect()->to('/login');
+    }
+
+    public function kebijakanPrivasi()
+    {
+        $session = session();
+
+        $data['user'] = [
+            'role' => $session->get('role')
+        ];
+
+        return view('auth/kebijakan', $data);
+    }
+
+    public function syaratKetentuan()
+    {
+        $session = session();
+
+        $data['user'] = [
+            'role' => $session->get('role')
+        ];
+
+        return view('auth/syarat_ketentuan', $data);
+    }
+
+    public function pusatBantuan()
+    {
+        $session = session();
+
+        $data['user'] = [
+            'username' => $session->get('username'),
+            'email' => $session->get('email'),
+            'role' => $session->get('role')
+        ];
+
+        return view('auth/pusat_bantuan', $data);
     }
 }

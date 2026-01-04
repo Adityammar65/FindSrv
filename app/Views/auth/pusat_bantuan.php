@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
 
-    <title>Pengaturan</title>
+    <title>Pusat Bantuan</title>
 </head>
 <body class="bg-light overflow-hidden fade-in-fwd">
     <div class="container-fluid vh-100 d-flex align-items-center">
@@ -20,7 +20,7 @@
                 <!-- SIDEMENU -->
                 <ul class="nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-semibold sidebar-item active" href="#">
+                        <a class="nav-link text-white fw-semibold sidebar-item" href="<?= base_url('pengaturan') ?>">
                             Profil
                         </a>
                     </li>
@@ -35,7 +35,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white opacity-75 sidebar-item" href="<?= base_url('bantuan') ?>">
+                        <a class="nav-link text-white opacity-75 sidebar-item active" href="#">
                             Pusat Bantuan
                         </a>
                     </li>
@@ -44,7 +44,7 @@
 
             <!-- MAIN CONTENT -->
             <main class="col-md-8 col-lg-9 p-5">
-                <h4 class="fw-bold mb-4">Pengaturan Profil</h4>
+                <h4 class="fw-bold mb-4">Pusat Bantuan</h4>
 
                 <form
                     action="<?= base_url('pengaturan/update') ?>"
@@ -52,27 +52,6 @@
                     enctype="multipart/form-data"
                     class="row g-4"
                 >
-                    <div class="col-12 d-flex align-items-center gap-4">
-                        <img
-                            src="<?= $user['foto_profil']
-                                ? base_url('uploads/profile/' . $user['foto_profil'])
-                                : base_url('assets/images/icons/profile.png'); ?>"
-                            alt="Foto Profil"
-                            class="rounded-circle border border-primary"
-                            width="90"
-                            height="90"
-                            style="object-fit: cover;"
-                        >
-
-                        <div>
-                            <label class="form-label mb-1">Foto Profil</label>
-                            <input
-                                type="file"
-                                name="foto_profil"
-                                class="form-control form-control-sm"
-                            >
-                        </div>
-                    </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Username</label>
                         <input
@@ -95,21 +74,22 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold">
-                            Reset Password
+                            Keluhan
                         </label>
-                        <input
-                            type="password"
-                            name="password"
+                        <textarea
+                            type="text"
+                            name="keluhan"
                             class="form-control"
-                            placeholder="Kosongkan jika tidak diganti"
-                        >
+                            placeholder="Keluhan Anda"
+                            rows="3"
+                        ></textarea>
                     </div>
                     <div class="col-12">
                         <button
                             type="submit"
                             class="btn btn-primary px-5 py-2 rounded-3 fw-bold"
                         >
-                            Simpan Perubahan
+                            Kirim
                         </button>
                         <a class="btn btn-primary fw-bold mb-3 mx-3 px-5 py-2 my-3" 
                             href="<?= $user['role'] === 'penyedia'

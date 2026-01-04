@@ -2,14 +2,13 @@
 $session = session();
 
 $username = $session->get('username');
-$email    = $session->get('email');
-$photo    = $session->get('foto_profil');
+$role = $session->get('role');
+$photo = $session->get('foto_profil');
 
 $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     ? base_url('uploads/profile/' . $photo)
     : base_url('assets/images/icons/profile.png');
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,14 +24,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <title>Beranda</title>
 </head>
 
+<!-- SIDEPANEL -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title">Profil Pengguna</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-
     <div class="offcanvas-body text-center">
-
         <img src="<?= $profilePhoto ?>"
             alt="User Profile"
             class="rounded-circle"
@@ -41,16 +39,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             style="object-fit: cover;">
 
         <h6 class="fw-bold"><?= esc($username) ?></h6>
-        <p class="text-muted"><?= esc($email) ?></p>
-
+        <p class="text-muted"><?= esc($role) ?> jasa</p>
         <hr>
-
         <ul class="list-group list-group-flush text-start">
-            <li class="list-group-item">
-                <a href="<?= base_url('profile') ?>" class="text-decoration-none text-dark">
-                    Profil Saya
-                </a>
-            </li>
             <li class="list-group-item">
                 <a href="<?= base_url('pengaturan') ?>" class="text-decoration-none text-dark">
                     Pengaturan
@@ -62,7 +53,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </a>
             </li>
         </ul>
-
     </div>
 </div>
 
@@ -241,9 +231,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     <div class="col-md-3 mb-4">
                         <h6 class="fw-bold">Bantuan</h6>
                         <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 mb-4">
