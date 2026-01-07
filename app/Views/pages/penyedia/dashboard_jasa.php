@@ -27,7 +27,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <!-- SIDEPANEL -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Profil Pengguna</h5>
+        <h5 class="offcanvas-title">Profil</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body text-center">
@@ -62,7 +62,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold" style="width: 100%;">
             <div class="container-fluid mx-5">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="<?= base_url('home_penyedia') ?>">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <a class="nav-link active" aria-current="page" href="#">Dashboard Jasa</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat</a>
+                            <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Riwayat</a>
                         </li>
                     </ul>
                     <div class="profile-sidepanel">
@@ -153,10 +156,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
                                     <div class="d-flex justify-content-between gap-2">
                                         <button
-                                            class="btn btn-outline-primary btn-sm edit-jasa-btn w-100"
+                                            class="btn btn-primary btn-sm edit-jasa-btn w-100"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editJasaModal"
-
                                             data-id="<?= $service['id_service'] ?>"
                                             data-judul="<?= esc($service['judul_jasa']) ?>"
                                             data-kategori="<?= esc($service['kategori']) ?>"
@@ -165,15 +167,21 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                         >
                                             Edit
                                         </button>
-
-                                        <a href="<?= base_url('jasa/delete' . $service['id_service']) ?>"
-                                        class="btn btn-outline-danger w-100 fw-bold"
-                                        onclick="return confirm('Yakin ingin menghapus jasa ini?')">
-                                            Hapus
+                                        <a href="<?= base_url('analytic/' . $service['id_service']) ?>"
+                                        class="btn btn-primary btn-sm w-100">
+                                            Analisis
                                         </a>
+                                        <button
+                                            class="btn btn-sm btn-danger w-100"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#hapusJasaModal"
+                                            data-id="<?= $service['id_service'] ?>"
+                                            data-judul="<?= esc($service['judul_jasa']) ?>"
+                                        >
+                                            Hapus
+                                        </button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -181,6 +189,46 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 90px;">
+                    <p class="text-muted mt-3">
+                        FindSrv adalah platform yang menghubungkan pengguna dengan
+                        penyedia jasa profesional secara aman dan terpercaya.
+                    </p>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold">Menu</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="<?= base_url('home_penyedia') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">Bantuan</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
+                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
+                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">Kontak</h6>
+                    <p class="text-muted mb-1">Email: support@findsrv.id</p>
+                    <p class="text-muted">Instagram: @findsrv.id</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center text-muted pb-3">
+                © 2025 FindSrv. All rights reserved.
+            </div>
+        </div>
+    </footer>
 </body>
                     
 <!-- MODAL TAMBAH JASA -->
@@ -447,7 +495,46 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     </div>
 </div>
 
+<!-- MODAL HAPUS JASA -->
+<div class="modal fade" id="hapusJasaModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <form id="hapusJasaForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-danger">
+                        Hapus Jasa
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-0">
+                        Apakah kamu yakin ingin menghapus jasa
+                        <strong id="hapusJudul"></strong>?
+                        <br>
+                        <span class="text-muted">Tindakan ini tidak bisa dibatalkan.</span>
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-danger px-4 fw-bold">
+                        Hapus
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 <script>
+/* =========================
+   MODAL EDIT JASA
+========================= */
 const editModal = document.getElementById('editJasaModal');
 
 editModal.addEventListener('show.bs.modal', function (event) {
@@ -462,12 +549,12 @@ editModal.addEventListener('show.bs.modal', function (event) {
     const form = document.getElementById('editJasaForm');
     form.action = `<?= base_url('jasa/edit') ?>/${id}`;
 
-    document.getElementById('editJudul').value = judul;
-    document.getElementById('editDeskripsi').value = deskripsi;
+    document.getElementById('editJudul').value = judul ?? '';
+    document.getElementById('editDeskripsi').value = deskripsi ?? '';
 
-    document.querySelectorAll('#editJasaModal input[name="kategori[]"]').forEach(cb => {
-        cb.checked = false;
-    });
+    document
+        .querySelectorAll('#editJasaModal input[name="kategori[]"]')
+        .forEach(cb => cb.checked = false);
 
     if (kategori) {
         kategori.split(',').forEach(kat => {
@@ -485,6 +572,24 @@ editModal.addEventListener('show.bs.modal', function (event) {
     } else {
         preview.style.display = 'none';
     }
+});
+
+
+/* =========================
+   MODAL HAPUS JASA
+========================= */
+const hapusModal = document.getElementById('hapusJasaModal');
+
+hapusModal.addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+
+    const id    = btn.getAttribute('data-id');
+    const judul = btn.getAttribute('data-judul');
+
+    const form = document.getElementById('hapusJasaForm');
+    form.action = `<?= base_url('jasa/hapus') ?>/${id}`;
+
+    document.getElementById('hapusJudul').textContent = judul ?? '';
 });
 </script>
 

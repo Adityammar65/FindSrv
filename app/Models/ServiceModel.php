@@ -17,4 +17,13 @@ class ServiceModel extends Model
         'kategori',
         'gambar_layanan'
     ];
+
+    public function getKategoriList()
+    {
+        return $this->select('kategori')
+                    ->distinct()
+                    ->orderBy('kategori', 'ASC')
+                    ->findAll();
+    }
+
 }

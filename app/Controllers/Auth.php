@@ -6,16 +6,19 @@ use App\Models\UserModel;
 
 class Auth extends BaseController
 {
+    // VIEW LOGIN PAGE
     public function login(): string
     {
         return view('auth/login');
     }
 
+    // VIEW REGISTER PAGE
     public function register(): string
     {
         return view('auth/register');
     }
 
+    // SIMPAN DATA REGISTER
     public function saveRegister()
     {
         $userModel = new UserModel();
@@ -49,6 +52,7 @@ class Auth extends BaseController
         );
     }
 
+    // FUNGSI LOGIN
     public function loginProcess()
     {
         $session = session();
@@ -85,6 +89,7 @@ class Auth extends BaseController
         );
     }
 
+    // EDIT PROFIL
     public function editProfile()
     {
         if (!session()->get('isLoggedIn')) {
@@ -96,6 +101,7 @@ class Auth extends BaseController
         return view('auth/edit_profile', ['user' => $user]);
     }
 
+    // SIMPAN DATA PROFIL BARU
     public function updateProfile()
     {
         if (!session()->get('isLoggedIn')) {
@@ -155,12 +161,14 @@ class Auth extends BaseController
         );
     }
 
+    // LOGOUT
     public function logout()
     {
         session()->destroy();
         return redirect()->to('/login');
     }
 
+    // KEBIJAKAN PRIVASI
     public function kebijakanPrivasi()
     {
         $session = session();
@@ -172,6 +180,7 @@ class Auth extends BaseController
         return view('auth/kebijakan', $data);
     }
 
+    // SYARAT KETENTUAN
     public function syaratKetentuan()
     {
         $session = session();
@@ -183,6 +192,7 @@ class Auth extends BaseController
         return view('auth/syarat_ketentuan', $data);
     }
 
+    // PUSAT BANTUAN
     public function pusatBantuan()
     {
         $session = session();

@@ -10,7 +10,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     : base_url('assets/images/icons/profile.png');
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +27,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <!-- SIDEPANEL -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Profil Pengguna</h5>
+        <h5 class="offcanvas-title">Profil</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body text-center">
@@ -78,7 +77,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard Jasa  </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat</a>
+                            <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Riwayat</a>
                         </li>
                     </ul>
                     <div class="profile-sidepanel">
@@ -199,7 +201,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     Tawarkan keahlian Anda dan jangkau lebih banyak konsumen di FindSrv
                 </p>
                 <div class="d-flex justify-content-center">
-                    <a href="#" class="btn btn-outline-light btn-lg fw-bold px-4 cta-card">
+                    <a href="<?= base_url('dashboard') ?>" class="btn btn-outline-light btn-lg fw-bold px-4 cta-card">
                         Unggah Jasa Sekarang
                     </a>
                 </div>
@@ -221,7 +223,8 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <h6 class="fw-bold">Menu</h6>
                         <ul class="list-unstyled">
                             <li><a href="#" class="text-decoration-none text-muted">Beranda</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 mb-4">

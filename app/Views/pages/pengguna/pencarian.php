@@ -27,7 +27,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <!-- SIDEPANEL -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Profil Pengguna</h5>
+        <h5 class="offcanvas-title">Profil</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body text-center">
@@ -58,11 +58,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
 <body>
     <div class="container-fluid fade-in-fwd p-0">
-
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold" style="width: 100%;">
             <div class="container-fluid mx-5">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="<?= base_url('home_pengguna') ?>">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,19 +70,15 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 <div class="collapse navbar-collapse mx-5 px-5" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+                            <a class="nav-link" aria-current="page" href="<?= base_url('home_pengguna') ?>">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Cari Jasa</a>
+                            <a class="nav-link active" href="#">Cari Jasa</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat</a>
                         </li>
                     </ul>
-                    <form class="d-flex mx-5 px-5">
-                        <input class="form-control me-2" type="search" placeholder="Cari Jasa" aria-label="Cari Jasa" style="width: 300px;">
-                        <button class="btn fw-bold btn-primary px-4" type="submit">Cari</button>
-                    </form>
                     <div class="profile-sidepanel">
                         <button type="button" class="btn p-0" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
                             <img src="<?= $profilePhoto ?>"
@@ -98,18 +93,137 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         </nav>
 
-        <div class="row d-flex flew-wrap">
-            <div class="col-4">
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <!-- PENCARIAN JASA -->
+        <div class="container my-5">
+            <div class="mb-4 text-center">
+                <h2 class="fw-bold">Temukan Jasa Terbaik</h2>
+                <p class="text-muted">
+                    Cari layanan sesuai kebutuhanmu
+                </p>
+            </div>
+
+            <form method="get" action="<?= current_url() ?>" class="row g-2 mb-4">
+                <div class="col-md-5">
+                    <input
+                        type="text"
+                        name="keyword"
+                        class="form-control"
+                        placeholder="Cari jasa..."
+                        value="<?= esc($keyword ?? '') ?>">
+                </div>
+                <div class="col-md-5">
+                    <select name="kategori" class="form-select">
+                        <option value="">Semua Kategori</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option
+                                value="<?= esc($cat) ?>"
+                                <?= ($selectedKategori ?? '') === $cat ? 'selected' : '' ?>
+                            >
+                                <?= esc($cat) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100">
+                        Cari
+                    </button>
+                </div>
+            </form>
+
+            <!-- HASIL -->
+            <?php if (empty($services)): ?>
+                <!-- EMPTY -->
+                <div class="text-center p-5">
+                    <img src="<?= base_url('assets/images/icons/empty.png') ?>"
+                        style="max-width:150px;"
+                        class="mb-3">
+                    <h5 class="fw-bold">Jasa tidak ditemukan</h5>
+                    <p class="text-muted">
+                        Coba kata kunci atau kategori lain
+                    </p>
+                </div>
+
+            <?php else: ?>
+                <!-- LIST JASA -->
+                <div class="row g-4">
+                    <?php foreach ($services as $service): ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm border-0 rounded-4">
+
+                                <img src="<?= $service['gambar_layanan']
+                                    ? base_url('uploads/jasa/' . $service['gambar_layanan'])
+                                    : base_url('assets/images/default-service.jpg') ?>"
+                                    class="card-img-top rounded-top-4"
+                                    style="height:200px;object-fit:cover;">
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <h5 class="fw-bold">
+                                        <?= esc($service['judul_jasa']) ?>
+                                    </h5>
+
+                                    <span class="badge bg-light text-primary mb-2">
+                                        <?= esc($service['kategori']) ?>
+                                    </span>
+
+                                    <p class="text-muted small flex-grow-1">
+                                        <?= esc(word_limiter($service['deskripsi_jasa'], 18)) ?>
+                                    </p>
+
+                                    <a href="<?= base_url('detail_jasa/' . $service['id_service']) ?>"
+                                    class="btn btn-outline-primary fw-bold mt-auto">
+                                        Lihat Detail
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            <?php endif ?>
+
+        </div>
+        
+        <!-- FOOTER -->
+        <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 90px;">
+                        <p class="text-muted mt-3">
+                            FindSrv adalah platform yang menghubungkan pengguna dengan
+                            penyedia jasa profesional secara aman dan terpercaya.
+                        </p>
+                    </div>
+                    <div class="col-md-2 mb-4">
+                        <h6 class="fw-bold">Menu</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <h6 class="fw-bold">Bantuan</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <h6 class="fw-bold">Kontak</h6>
+                        <p class="text-muted mb-1">Email: support@findsrv.id</p>
+                        <p class="text-muted">Instagram: @findsrv.id</p>
                     </div>
                 </div>
+                <hr>
+                <div class="text-center text-muted pb-3">
+                    © 2025 FindSrv. All rights reserved.
+                </div>
             </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
