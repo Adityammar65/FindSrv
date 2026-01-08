@@ -70,13 +70,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 <div class="collapse navbar-collapse mx-5 px-5" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="<?= base_url('home_pengguna') ?>">Beranda</a>
+                            <a class="nav-link" href="<?= base_url('home_pengguna') ?>">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Cari Jasa</a>
+                            <a class="nav-link active" aria-current="page" href="#">Cari Jasa</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat</a>
+                        <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
                         </li>
                     </ul>
                     <div class="profile-sidepanel">
@@ -150,39 +150,31 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     <?php foreach ($services as $service): ?>
                         <div class="col-md-6 col-lg-4">
                             <div class="card h-100 shadow-sm border-0 rounded-4">
-
                                 <img src="<?= $service['gambar_layanan']
                                     ? base_url('uploads/jasa/' . $service['gambar_layanan'])
                                     : base_url('assets/images/default-service.jpg') ?>"
                                     class="card-img-top rounded-top-4"
                                     style="height:200px;object-fit:cover;">
-
                                 <div class="card-body d-flex flex-column">
-
                                     <h5 class="fw-bold">
                                         <?= esc($service['judul_jasa']) ?>
                                     </h5>
-
                                     <span class="badge bg-light text-primary mb-2">
                                         <?= esc($service['kategori']) ?>
                                     </span>
-
                                     <p class="text-muted small flex-grow-1">
                                         <?= esc(word_limiter($service['deskripsi_jasa'], 18)) ?>
                                     </p>
-
                                     <a href="<?= base_url('detail_jasa/' . $service['id_service']) ?>"
                                     class="btn btn-outline-primary fw-bold mt-auto">
                                         Lihat Detail
                                     </a>
-
                                 </div>
                             </div>
                         </div>
                     <?php endforeach ?>
                 </div>
             <?php endif ?>
-
         </div>
         
         <!-- FOOTER -->
@@ -201,7 +193,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <ul class="list-unstyled">
                             <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
                             <li><a href="#" class="text-decoration-none text-muted">Cari Jasa</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
+                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 mb-4">

@@ -224,6 +224,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <ul class="list-unstyled">
                             <li><a href="#" class="text-decoration-none text-muted">Beranda</a></li>
                             <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
                             <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
                         </ul>
                     </div>

@@ -134,26 +134,21 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     <?php foreach ($services as $service): ?>
                         <div class="col-md-6 col-lg-4">
                             <div class="card h-100 shadow-sm border-0 rounded-4">
-
                                 <img src="<?= $service['gambar_layanan']
                                     ? base_url('uploads/jasa/' . $service['gambar_layanan'])
                                     : base_url('assets/images/default-service.jpg') ?>"
                                     class="card-img-top rounded-top-4"
                                     style="height: 200px; object-fit: cover;">
-
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="fw-bold">
                                         <?= esc($service['judul_jasa']) ?>
                                     </h5>
-
                                     <p class="text-muted small mb-3">
                                         <?= esc($service['kategori']) ?>
                                     </p>
-
                                     <p class="flex-grow-1">
                                         <?= esc(word_limiter($service['deskripsi_jasa'], 20)) ?>
                                     </p>
-
                                     <div class="d-flex justify-content-between gap-2">
                                         <button
                                             class="btn btn-primary btn-sm edit-jasa-btn w-100"
@@ -206,6 +201,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     <ul class="list-unstyled">
                         <li><a href="<?= base_url('home_penyedia') ?>" class="text-decoration-none text-muted">Beranda</a></li>
                         <li><a href="#" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                        <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
                         <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
                     </ul>
                 </div>
@@ -499,7 +495,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <div class="modal fade" id="hapusJasaModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">
-
             <form id="hapusJasaForm" method="post">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-danger">
@@ -507,7 +502,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
                     <p class="mb-0">
                         Apakah kamu yakin ingin menghapus jasa
@@ -516,7 +510,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <span class="text-muted">Tindakan ini tidak bisa dibatalkan.</span>
                     </p>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
                         Batal
@@ -526,7 +519,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -573,7 +565,6 @@ editModal.addEventListener('show.bs.modal', function (event) {
         preview.style.display = 'none';
     }
 });
-
 
 /* =========================
    MODAL HAPUS JASA

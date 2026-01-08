@@ -99,7 +99,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <h3 class="fw-bold my-4 mx-5">Pesanan Masuk</h3>
 
         <!-- DASHBOARD PESANAN -->
-        <div class="row g-4">
+        <div class="row g-4 m-4">
             <?php foreach ($orders as $order): ?>
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 shadow-sm border-0">
@@ -126,7 +126,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                     Chat
                                 </button>
                                 <a href="<?= base_url('order/status/' . $order['id_order']) ?>"
-                                class="btn btn-sm btn-outline-secondary w-100">
+                                class="btn btn-sm btn-primary w-100">
                                     Update Status
                                 </a>
                             </div>
@@ -158,7 +158,8 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <h6 class="fw-bold">Menu</h6>
                         <ul class="list-unstyled">
                             <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
                             <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
                         </ul>
                     </div>

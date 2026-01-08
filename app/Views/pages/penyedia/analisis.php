@@ -21,7 +21,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
 
-    <title>Analisis</title>
+    <title>Analisis Jasa</title>
 </head>
 
 <!-- SIDEPANEL -->
@@ -58,6 +58,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
 <body>
     <div class="container-fluid p-0 fade-in-fwd">
+
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold" style="width: 100%;">
             <div class="container-fluid mx-5">
@@ -73,7 +74,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <a class="nav-link" href="<?= base_url('home_penyedia') ?>">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Dashboard Jasa</a>
+                            <a class="nav-link active" href="<?= base_url('dashboard') ?>">Dashboard Jasa</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
@@ -97,27 +98,56 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </nav>
 
         <div class="container my-4">
-            <h4 class="fw-bold mb-4">
-                Analisis Jasa: <?= esc($service['judul_jasa']) ?>
-            </h4>
+            <div class="mb-4">
+                <h4 class="fw-bold mb-1">Analisis Jasa</h4>
+                <small class="text-muted">
+                    Data performa jasa Anda
+                </small>
+            </div>
 
+            <!-- DETAIL JASA -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <img src="<?= base_url('uploads/jasa/' . $service['gambar_layanan']) ?>"
+                                class="img-fluid rounded"
+                                alt="Gambar Jasa">
+                        </div>
+                        <div class="col-md-9">
+                            <h5 class="fw-bold mb-1">
+                                <?= esc($service['judul_jasa']) ?>
+                            </h5>
+                            <div class="mb-2">
+                                <span class="badge bg-primary me-2">
+                                    <?= esc($service['kategori']) ?>
+                                </span>
+                            </div>
+                            <p class="text-muted small mb-0">
+                                <?= esc(word_limiter($service['deskripsi_jasa'], 25)) ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALYTIC -->
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">Jumlah Dilihat</h6>
-                            <h2 class="fw-bold text-primary">
+                            <small class="text-muted">Jumlah Dilihat</small>
+                            <h2 class="fw-bold text-primary mb-0">
                                 <?= $analytic['jumlah_dilihat'] ?? 0 ?>
                             </h2>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-6">
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">Jumlah Pesanan</h6>
-                            <h2 class="fw-bold text-success">
+                            <small class="text-muted">Jumlah Pesanan</small>
+                            <h2 class="fw-bold text-success mb-0">
                                 <?= $analytic['jumlah_pesanan'] ?? 0 ?>
                             </h2>
                         </div>
@@ -150,7 +180,8 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <h6 class="fw-bold">Menu</h6>
                         <ul class="list-unstyled">
                             <li><a href="<?= base_url('home_penyedia') ?>" class="text-decoration-none text-muted">Beranda</a></li>
-                            <li><a href="#" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
                             <li><a href="#" class="text-decoration-none text-muted">Riwayat</a></li>
                         </ul>
                     </div>
