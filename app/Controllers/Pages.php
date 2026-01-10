@@ -445,50 +445,6 @@ class Pages extends BaseController
     }
 
     /**
-     * Set price for order
-     */
-    public function setHarga()
-    {
-        $session = session();
-        $idProvider = $session->get('id_user');
-
-        if (!$idProvider) {
-            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
-        }
-
-        $idOrder = $this->request->getPost('id_order');
-        $harga = $this->request->getPost('harga');
-
-        // Validate inputs
-        if (empty($idOrder) || empty($harga) || !is_numeric($harga) || $harga <= 0) {
-            return redirect()->back()->with('error', 'Harga tidak valid');
-        }
-
-        // Verify order ownership
-        $order = $this->orderModel
-            ->select('orders.*, services.id_penyedia')
-            ->join('services', 'services.id_service = orders.id_service', 'left')
-            ->find($idOrder);
-
-        if (!$order || $order['id_penyedia'] != $idProvider) {
-            return redirect()->back()->with('error', 'Akses tidak valid');
-        }
-
-        // Update order
-        try {
-            $this->orderModel->update($idOrder, [
-                'harga' => (float)$harga,
-                'status_pesanan' => 'menunggu pembayaran'
-            ]);
-
-            return redirect()->back()->with('success', 'Harga berhasil ditetapkan');
-        } catch (\Exception $e) {
-            log_message('error', 'Failed to set price: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal menetapkan harga');
-        }
-    }
-
-    /**
      * View order history for user
      */
     public function riwayat()
@@ -565,47 +521,6 @@ class Pages extends BaseController
             'service' => $service,
             'analytic' => $analytic
         ]);
-    }
-
-    // ==================== CHAT ====================
-
-    /**
-     * Send chat message
-     */
-    public function sendChat()
-    {
-        $session = session();
-        $idPengirim = $session->get('id_user');
-
-        if (!$idPengirim) {
-            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
-        }
-
-        $idPenerima = $this->request->getPost('id_penerima');
-        $pesan = trim($this->request->getPost('pesan'));
-
-        // Validate inputs
-        if (empty($idPenerima) || empty($pesan)) {
-            return redirect()->back()->with('error', 'Pesan tidak boleh kosong');
-        }
-
-        // Prevent sending message to self
-        if ($idPengirim == $idPenerima) {
-            return redirect()->back()->with('error', 'Tidak dapat mengirim pesan ke diri sendiri');
-        }
-
-        try {
-            $this->chatModel->insert([
-                'id_pengirim' => $idPengirim,
-                'id_penerima' => $idPenerima,
-                'pesan' => esc($pesan)
-            ]);
-
-            return redirect()->back()->with('success', 'Pesan terkirim');
-        } catch (\Exception $e) {
-            log_message('error', 'Failed to send chat: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal mengirim pesan');
-        }
     }
 
     // ==================== HELPER METHODS ====================
