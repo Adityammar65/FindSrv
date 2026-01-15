@@ -98,7 +98,7 @@ if (isset($order['id_service'])) {
     <!-- NAVBAR & CONTENT -->
     <div class="container-fluid p-0 fade-in-fwd">
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
-            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5 py-2 py-md-3">
+            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
@@ -107,9 +107,9 @@ if (isset($order['id_service'])) {
                 </button>
                 <div class="collapse navbar-collapse mx-md-5 px-md-5" id="navbarSupportedContent">
                     <?php if ($role === 'penyedia'): ?>
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-6 fs-md-1">
                             <li class="nav-item d-flex flex-row align-items-center justify-content-between">
-                                <a class="nav-link" aria-current="page" href="#">Beranda</a>
+                                <a class="nav-link" aria-current="page" href="<?= base_url('home_penyedia') ?>">Beranda</a>
                                 <button type="button" class="btn p-0 d-md-none" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
                                     <img src="<?= $profilePhoto ?>" alt="User Profile" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
                                 </button>
@@ -118,13 +118,10 @@ if (isset($order['id_service'])) {
                                 <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
+                                <a class="nav-link active" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <div class="profile-sidepanel ms-5">
@@ -144,10 +141,7 @@ if (isset($order['id_service'])) {
                                 <a class="nav-link" href="<?= base_url('pencarian') ?>">Cari Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link active" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <form action="<?= base_url('pencarian') ?>" method="get" class="d-flex mb-2 mb-lg-0 w-auto">
@@ -167,7 +161,11 @@ if (isset($order['id_service'])) {
         <div class="container mt-4">
             <div class="chat-subject d-flex justify-content-between align-items-center">
                 <h5>Chat: <?= !empty($order['judul_jasa']) ? esc($order['judul_jasa']) : 'Chat Pesanan' ?></h5>
-                <a href="<?= base_url('chat') ?>" class="btn btn-primary">Kembali</a>
+                <?php if ($role === 'penyedia'): ?>
+                    <a href="<?= base_url('daftar_pesanan') ?>" class="btn btn-primary">Kembali</a>
+                <?php else: ?>
+                    <a href="<?= base_url('riwayat') ?>" class="btn btn-primary">Kembali</a>
+                <?php endif; ?>
             </div>
 
             <div class="chat-box my-3" id="chatBox">

@@ -50,7 +50,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <div class="container-fluid p-0">
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
-            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5 py-2 py-md-3">
+            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>

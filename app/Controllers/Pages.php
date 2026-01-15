@@ -15,9 +15,8 @@ class Pages extends BaseController
     protected $chatModel;
     protected $analyticModel;
     
-    // Configuration constants
     private const MAX_CATEGORIES = 3;
-    private const MAX_FILE_SIZE = 5120; // 5MB in KB
+    private const MAX_FILE_SIZE = 5120;
     private const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     private const UPLOAD_PATH = 'uploads/jasa';
 
@@ -33,25 +32,16 @@ class Pages extends BaseController
 
     // ==================== VIEW PAGES ====================
 
-    /**
-     * Welcome/Landing page
-     */
     public function index(): string
     {
         return view('pages/welcoming');
     }
 
-    /**
-     * User homepage
-     */
     public function home_pengguna(): string
     {
         return view('pages/pengguna/homepage_pengguna');
     }
 
-    /**
-     * Provider homepage
-     */
     public function home_penyedia(): string
     {
         return view('pages/penyedia/homepage_penyedia');
@@ -59,9 +49,6 @@ class Pages extends BaseController
 
     // ==================== SERVICE MANAGEMENT ====================
 
-    /**
-     * Provider dashboard with service listing
-     */
     public function dashboardJasa()
     {
         $session = session();
@@ -71,7 +58,6 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Fetch services with analytics in single query
         $services = $this->serviceModel
             ->select('services.*, COALESCE(analytics.jumlah_dilihat, 0) as views, COALESCE(analytics.jumlah_pesanan, 0) as orders')
             ->join('analytics', 'analytics.id_service = services.id_service', 'left')
@@ -91,9 +77,6 @@ class Pages extends BaseController
         return view('pages/penyedia/dashboard_jasa', $data);
     }
 
-    /**
-     * Create new service
-     */
     public function simpanJasa()
     {
         $session = session();
@@ -103,7 +86,6 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Validate categories
         $kategori = $this->request->getPost('kategori');
         if (!$kategori || !is_array($kategori) || count($kategori) > self::MAX_CATEGORIES) {
             return redirect()->back()
@@ -111,7 +93,6 @@ class Pages extends BaseController
                 ->with('error', 'Pilih minimal 1 dan maksimal ' . self::MAX_CATEGORIES . ' kategori');
         }
 
-        // Validate and sanitize inputs
         $judulJasa = trim($this->request->getPost('judul_jasa'));
         $deskripsiJasa = trim($this->request->getPost('deskripsi_jasa'));
 
@@ -121,7 +102,6 @@ class Pages extends BaseController
                 ->with('error', 'Judul jasa harus diisi');
         }
 
-        // Prepare data
         $data = [
             'id_penyedia' => $idPenyedia,
             'judul_jasa' => esc($judulJasa),
@@ -129,7 +109,6 @@ class Pages extends BaseController
             'kategori' => implode(',', array_map('esc', $kategori)),
         ];
 
-        // Handle image upload
         $imageResult = $this->handleImageUpload('gambar_layanan');
         if ($imageResult['error']) {
             return redirect()->back()
@@ -141,12 +120,10 @@ class Pages extends BaseController
             $data['gambar_layanan'] = $imageResult['filename'];
         }
 
-        // Insert service
         try {
             $this->serviceModel->insert($data);
             return redirect()->to('dashboard')->with('success', 'Jasa berhasil ditambahkan');
         } catch (\Exception $e) {
-            // Delete uploaded image if database insert fails
             if ($imageResult['filename']) {
                 $this->deleteImage($imageResult['filename']);
             }
@@ -157,9 +134,6 @@ class Pages extends BaseController
         }
     }
 
-    /**
-     * Update existing service
-     */
     public function updateJasa($id)
     {
         $session = session();
@@ -169,13 +143,11 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Verify ownership
         $service = $this->serviceModel->find($id);
         if (!$service || $service['id_penyedia'] != $userId) {
             return redirect()->to('dashboard')->with('error', 'Akses tidak valid');
         }
 
-        // Validate categories
         $kategori = $this->request->getPost('kategori');
         if (!$kategori || !is_array($kategori) || count($kategori) > self::MAX_CATEGORIES) {
             return redirect()->back()
@@ -183,7 +155,6 @@ class Pages extends BaseController
                 ->with('error', 'Pilih minimal 1 dan maksimal ' . self::MAX_CATEGORIES . ' kategori');
         }
 
-        // Validate and sanitize inputs
         $judulJasa = trim($this->request->getPost('judul_jasa'));
         $deskripsiJasa = trim($this->request->getPost('deskripsi_jasa'));
 
@@ -199,7 +170,6 @@ class Pages extends BaseController
             'kategori' => implode(',', array_map('esc', $kategori)),
         ];
 
-        // Handle new image upload
         $imageResult = $this->handleImageUpload('gambar_layanan');
         if ($imageResult['error']) {
             return redirect()->back()
@@ -208,14 +178,12 @@ class Pages extends BaseController
         }
 
         if ($imageResult['filename']) {
-            // Delete old image
             if (!empty($service['gambar_layanan'])) {
                 $this->deleteImage($service['gambar_layanan']);
             }
             $data['gambar_layanan'] = $imageResult['filename'];
         }
 
-        // Update service
         try {
             $this->serviceModel->update($id, $data);
             return redirect()->to('dashboard')->with('success', 'Jasa berhasil diperbarui');
@@ -227,9 +195,6 @@ class Pages extends BaseController
         }
     }
 
-    /**
-     * Delete service
-     */
     public function hapusJasa($id)
     {
         $session = session();
@@ -239,21 +204,16 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Verify ownership
         $service = $this->serviceModel->find($id);
         if (!$service || $service['id_penyedia'] != $userId) {
             return redirect()->to('dashboard')->with('error', 'Akses tidak valid');
         }
 
-        // Use transaction for data integrity
         $db = \Config\Database::connect();
         $db->transStart();
 
         try {
-            // Delete service (related records should cascade if properly configured)
             $this->serviceModel->delete($id);
-            
-            // Delete image file
             if (!empty($service['gambar_layanan'])) {
                 $this->deleteImage($service['gambar_layanan']);
             }
@@ -273,21 +233,15 @@ class Pages extends BaseController
 
     // ==================== SEARCH & BROWSE ====================
 
-    /**
-     * Search services with filters
-     */
     public function pencarian()
     {
         $keyword = trim($this->request->getGet('keyword'));
         $kategori = $this->request->getGet('kategori');
-        
-        // Build query
         $builder = $this->serviceModel
             ->select('services.*, users.username, COALESCE(analytics.jumlah_dilihat, 0) as views')
             ->join('users', 'users.id_user = services.id_penyedia', 'left')
             ->join('analytics', 'analytics.id_service = services.id_service', 'left');
 
-        // Apply filters
         if (!empty($keyword)) {
             $builder->groupStart()
                 ->like('services.judul_jasa', esc($keyword))
@@ -299,7 +253,6 @@ class Pages extends BaseController
             $builder->like('services.kategori', esc($kategori));
         }
 
-        // Pagination
         $perPage = 12;
         $services = $builder->paginate($perPage);
         $pager = $builder->pager;
@@ -315,12 +268,8 @@ class Pages extends BaseController
         return view('pages/pengguna/pencarian', $data);
     }
 
-    /**
-     * View service details
-     */
     public function detailJasa($id)
     {
-        // Fetch service with provider info
         $service = $this->serviceModel
             ->select('services.*, users.username, users.email')
             ->join('users', 'users.id_user = services.id_penyedia', 'left')
@@ -330,10 +279,7 @@ class Pages extends BaseController
             throw new PageNotFoundException('Jasa tidak ditemukan');
         }
 
-        // Increment view count (use proper parameterized query)
         $this->incrementViewCount($id);
-
-        // Fetch current analytics
         $analytic = $this->analyticModel->where('id_service', $id)->first();
 
         $data = [
@@ -346,9 +292,6 @@ class Pages extends BaseController
 
     // ==================== ORDER MANAGEMENT ====================
 
-    /**
-     * Create new order
-     */
     public function orderJasa()
     {
         $session = session();
@@ -361,28 +304,23 @@ class Pages extends BaseController
         $idService = $this->request->getPost('id_service');
         $deskripsiPermintaan = trim($this->request->getPost('deskripsi_permintaan'));
 
-        // Validate inputs
         if (empty($idService) || empty($deskripsiPermintaan)) {
             return redirect()->back()->with('error', 'Semua field harus diisi');
         }
 
-        // Verify service exists
         $service = $this->serviceModel->find($idService);
         if (!$service) {
             return redirect()->to('pencarian')->with('error', 'Jasa tidak ditemukan');
         }
 
-        // Prevent ordering own service
         if ($service['id_penyedia'] == $idPencari) {
             return redirect()->back()->with('error', 'Anda tidak dapat memesan jasa sendiri');
         }
 
-        // Use transaction
         $db = \Config\Database::connect();
         $db->transStart();
 
         try {
-            // Insert order
             $this->orderModel->insert([
                 'id_pencari' => $idPencari,
                 'id_service' => $idService,
@@ -390,7 +328,6 @@ class Pages extends BaseController
                 'status_pesanan' => 'dalam proses'
             ]);
 
-            // Increment order count in analytics
             $this->incrementOrderCount($idService);
 
             $db->transComplete();
@@ -408,20 +345,94 @@ class Pages extends BaseController
         }
     }
 
-    /**
-     * List orders for provider
-     */
+    public function batalkanOrder($orderId)
+    {
+        $session = session();
+        $idUser = $session->get('id_user');
+        $role = $session->get('role');
+        
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+        
+        $order = $this->orderModel->find($orderId);
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
+        
+        if ($role === 'pengguna' && $order['id_pencari'] != $idUser) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk membatalkan pesanan ini');
+        } elseif ($role === 'penyedia' && $order['id_penyedia'] != $idUser) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk membatalkan pesanan ini');
+        }
+        
+        $this->orderModel->update($orderId, [
+            'status_pesanan' => 'dibatalkan'
+        ]);
+        
+        return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan');
+    }
+
+    public function statusUpdate($orderId)
+    {
+        $session = session();
+        $idUser = $session->get('id_user');
+        $role = $session->get('role');
+        
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+        
+        $newStatus = $this->request->getPost('status');
+        
+        // Validate status
+        $validStatuses = ['dalam proses', 'selesai', 'dibatalkan'];
+        if (!in_array($newStatus, $validStatuses)) {
+            return redirect()->back()->with('error', 'Status tidak valid');
+        }
+        
+        // Get the order
+        $order = $this->orderModel->find($orderId);
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
+        
+        // Verify permission
+        if ($role === 'penyedia') {
+            if ($order['id_penyedia'] != $idUser) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengubah status pesanan ini');
+            }
+        } elseif ($role === 'pengguna') {
+            if ($newStatus !== 'dibatalkan' || $order['id_pencari'] != $idUser) {
+                return redirect()->back()->with('error', 'Anda hanya dapat membatalkan pesanan Anda sendiri');
+            }
+        }
+        
+        // Update the status
+        $this->orderModel->update($orderId, [
+            'status_pesanan' => $newStatus
+        ]);
+        
+        $statusMessages = [
+            'dalam proses' => 'Status pesanan diubah menjadi Dalam Proses',
+            'selesai' => 'Pesanan berhasil diselesaikan',
+            'dibatalkan' => 'Pesanan berhasil dibatalkan'
+        ];
+        
+        return redirect()->back()->with('success', $statusMessages[$newStatus]);
+    }
+
     public function daftarPesanan()
     {
         $session = session();
         $idProvider = $session->get('id_user');
-
+        
         if (!$idProvider) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
-
-        // Fetch orders with pagination
-        $perPage = 20;
+        
         $orders = $this->orderModel
             ->select('
                 orders.*,
@@ -434,56 +445,59 @@ class Pages extends BaseController
             ->join('users', 'users.id_user = orders.id_pencari', 'left')
             ->where('services.id_penyedia', $idProvider)
             ->orderBy('orders.tanggal_order', 'DESC')
-            ->paginate($perPage);
-
-        $pager = $this->orderModel->pager;
-
+            ->findAll();
+        
         return view('pages/penyedia/daftar_pesanan', [
-            'orders' => $orders,
-            'pager' => $pager
+            'orders' => $orders
         ]);
     }
 
-    /**
-     * View order history for user
-     */
     public function riwayat()
     {
         $session = session();
         $idUser = $session->get('id_user');
-
+        $role = $session->get('role');
+        
         if (!$idUser) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
-
-        // Fetch orders with pagination
+        
         $perPage = 20;
-        $orders = $this->orderModel
+        $builder = $this->orderModel
             ->select('
                 orders.*,
                 services.judul_jasa,
                 services.gambar_layanan,
-                users.username AS username_penyedia
+                penyedia.username AS username_penyedia,
+                penyedia.email AS email_penyedia,
+                pencari.username AS username_pencari,
+                pencari.email AS email_pencari
             ')
             ->join('services', 'services.id_service = orders.id_service', 'left')
-            ->join('users', 'users.id_user = services.id_penyedia', 'left')
-            ->where('orders.id_pencari', $idUser)
+            ->join('users AS penyedia', 'penyedia.id_user = services.id_penyedia', 'left')
+            ->join('users AS pencari', 'pencari.id_user = orders.id_pencari', 'left');
+        
+        if ($role === 'pengguna') {
+            $builder->where('orders.id_pencari', $idUser);
+        } else {
+            $builder->where('services.id_penyedia', $idUser);
+        }
+        
+        $orders = $builder
             ->orderBy('orders.tanggal_order', 'DESC')
             ->paginate($perPage);
-
+        
         $pager = $this->orderModel->pager;
-
-        return view('pages/pengguna/riwayat', [
+        
+        return view('pages/riwayat/riwayat', [
             'orders' => $orders,
-            'pager' => $pager
+            'pager' => $pager,
+            'role' => $role
         ]);
     }
 
     // ==================== ANALYTICS ====================
 
-    /**
-     * View analytics for a service
-     */
     public function analyticJasa($idService)
     {
         $session = session();
@@ -493,7 +507,6 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Fetch service with provider info
         $service = $this->serviceModel
             ->select('services.*, users.username')
             ->join('users', 'users.id_user = services.id_penyedia', 'left')
@@ -505,10 +518,8 @@ class Pages extends BaseController
             throw new PageNotFoundException('Jasa tidak ditemukan');
         }
 
-        // Fetch analytics
         $analytic = $this->analyticModel->where('id_service', $idService)->first();
 
-        // If no analytics exist, create initial record
         if (!$analytic) {
             $analytic = [
                 'id_service' => $idService,
@@ -525,9 +536,6 @@ class Pages extends BaseController
 
     // ==================== HELPER METHODS ====================
 
-    /**
-     * Handle image upload with validation
-     */
     private function handleImageUpload($fieldName): array
     {
         $result = [
@@ -538,32 +546,27 @@ class Pages extends BaseController
 
         $file = $this->request->getFile($fieldName);
 
-        // Check if file was uploaded
         if (!$file || !$file->isValid()) {
-            return $result; // No file or invalid, but not an error
+            return $result;
         }
 
-        // Validate file size
         if ($file->getSize() > (self::MAX_FILE_SIZE * 1024)) {
             $result['error'] = true;
             $result['message'] = 'Ukuran file maksimal ' . self::MAX_FILE_SIZE . ' KB';
             return $result;
         }
 
-        // Validate file type
         if (!in_array($file->getMimeType(), self::ALLOWED_IMAGE_TYPES)) {
             $result['error'] = true;
             $result['message'] = 'Format file harus JPG, JPEG, PNG, atau WEBP';
             return $result;
         }
 
-        // Create upload directory if not exists
         $uploadPath = FCPATH . self::UPLOAD_PATH;
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
 
-        // Move file with random name
         try {
             $filename = $file->getRandomName();
             $file->move($uploadPath, $filename);
@@ -577,9 +580,6 @@ class Pages extends BaseController
         return $result;
     }
 
-    /**
-     * Delete image file
-     */
     private function deleteImage($filename): bool
     {
         if (empty($filename)) {
@@ -600,21 +600,16 @@ class Pages extends BaseController
         return false;
     }
 
-    /**
-     * Increment view count for a service
-     */
     private function incrementViewCount($idService): void
     {
         try {
             $analytic = $this->analyticModel->where('id_service', $idService)->first();
 
             if ($analytic) {
-                // Update existing record
                 $this->analyticModel->update($analytic['id_analytic'], [
                     'jumlah_dilihat' => $analytic['jumlah_dilihat'] + 1
                 ]);
             } else {
-                // Create new record
                 $this->analyticModel->insert([
                     'id_service' => $idService,
                     'jumlah_dilihat' => 1,
@@ -626,21 +621,16 @@ class Pages extends BaseController
         }
     }
 
-    /**
-     * Increment order count for a service
-     */
     private function incrementOrderCount($idService): void
     {
         try {
             $analytic = $this->analyticModel->where('id_service', $idService)->first();
 
             if ($analytic) {
-                // Update existing record
                 $this->analyticModel->update($analytic['id_analytic'], [
                     'jumlah_pesanan' => $analytic['jumlah_pesanan'] + 1
                 ]);
             } else {
-                // Create new record
                 $this->analyticModel->insert([
                     'id_service' => $idService,
                     'jumlah_dilihat' => 0,
@@ -652,10 +642,6 @@ class Pages extends BaseController
         }
     }
 
-    /**
-     * Get list of available categories
-     * Consider moving this to a config file or database
-     */
     private function getCategories(): array
     {
         return [

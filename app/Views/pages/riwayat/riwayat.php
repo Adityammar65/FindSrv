@@ -75,7 +75,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <div class="container-fluid p-0 fade-in-fwd">
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
-            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5 py-2 py-md-3">
+            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
@@ -84,9 +84,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </button>
                 <div class="collapse navbar-collapse mx-md-5 px-md-5" id="navbarSupportedContent">
                     <?php if ($role === 'penyedia'): ?>
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="#">Beranda</a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-6 fs-md-1">
+                            <li class="nav-item d-flex flex-row align-items-center justify-content-between">
+                                <a class="nav-link" aria-current="page" href="<?= base_url('home_penyedia') ?>">Beranda</a>
                                 <button type="button" class="btn p-0 d-md-none" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
                                     <img src="<?= $profilePhoto ?>" alt="User Profile" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
                                 </button>
@@ -98,14 +98,11 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link active" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
-                        <div class="profile-sidepanel">
-                            <button type="button" class="btn p-0" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
+                        <div class="profile-sidepanel ms-5">
+                            <button type="button" class="btn p-0 d-none d-lg-block" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
                                 <img src="<?= $profilePhoto ?>" alt="User Profile" class="rounded-circle" width="70" height="70" style="object-fit: cover;">
                             </button>
                         </div>
@@ -121,10 +118,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('pencarian') ?>">Cari Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link active" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <form action="<?= base_url('pencarian') ?>" method="get" class="d-flex mb-2 mb-lg-0 w-auto">
@@ -141,42 +135,73 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         </nav>
 
-        <h3 class="fw-bold m-4">Riwayat Pesanan</h3>
+        <h5 class="fw-bold m-4 mx-5">Riwayat Pesanan</h5>
 
         <?php if (empty($orders)): ?>
             <div class="alert alert-info">
                 Kamu belum memiliki riwayat pesanan.
             </div>
         <?php else: ?>
-            <div class="list-group mx-3 px-3">
-                <?php foreach ($orders as $order): ?>
-                    <div class="list-group-item p-3 mb-2 shadow-sm border-0 rounded-3">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 text-center">
-                                <img src="<?= $order['gambar_layanan'] ? base_url('uploads/jasa/' . $order['gambar_layanan']) : base_url('assets/images/default-service.jpg') ?>" class="img-fluid rounded" style="height:90px; width:100%; object-fit:cover;">
+            <div class="container mt-4">
+                <div class="row">
+                    <?php foreach ($orders as $order): ?>
+                    <div class="col-12 mb-3">
+                        <a href="<?= base_url('chat/detail/' . $order['id_order']) ?>" class="text-decoration-none">
+                            <div class="card shadow-sm border-0 rounded-3 h-100">
+                                <div class="card-body p-3 d-flex flex-column">                                    
+                                    <!-- Chat Info -->
+                                    <div class="flex-grow-1">
+                                        <div class="top-content d-flex flex-row align-items-center">
+                                            <h6 class="fw-bold text-dark m-0">
+                                                <?= esc($order['judul_jasa']) ?>
+                                            </h6>
+                                            <span class="badge <?php if ($order['status_pesanan'] === 'dalam proses') echo 'bg-warning text-dark mx-2'; elseif ($order['status_pesanan'] === 'selesai') echo 'bg-success mx-2'; else echo 'bg-danger mx-2'; ?>">
+                                                <?= ucfirst($order['status_pesanan']) ?>
+                                            </span>
+                                            <small class="text-dark">
+                                                <?= date('d M Y', strtotime($order['tanggal_order'])) ?>
+                                            </small>
+                                        </div>
+                                        <p class="small fw-bold text-dark mb-1">
+                                            <?php if ($role === 'pengguna'): ?>
+                                                Penyedia: <?= esc($order['username_penyedia']) ?>
+                                            <?php else: ?>
+                                                Pelanggan: <?= esc($order['username_pencari']) ?>
+                                            <?php endif; ?>
+                                        </p>
+                                        <div class="col-md-6 text-center my-2 d-flex justify-content-between align-items-center flex-row">
+                                            <img src="<?= $order['gambar_layanan'] ? base_url('uploads/jasa/' . $order['gambar_layanan']) : base_url('assets/images/default-service.jpg') ?>" class="img-fluid rounded" style="height:90px; width:50%; object-fit:cover;">
+                                            <p class="text-dark fw-bold">Total Harga: 
+                                                <?php if ($order['harga_jasa'] !== null) echo number_format($order['harga_jasa'], 0, ',', '.'); 
+                                                elseif ($order['status_pesanan'] === 'dibatalkan') echo 'Pesanan Dibatalkan';
+                                                else echo 'Harga Belum ditetapkan'; ?>
+                                            </p>
+                                        </div>
+                                        <p class="small text-dark mb-2">
+                                            Deskripsi pesanan:
+                                            <?= esc(substr($order['deskripsi_permintaan'], 0, 50)) ?><?= strlen($order['deskripsi_permintaan']) > 50 ? '...' : '' ?>
+                                        </p>
+                                    </div>
+                                    <?php if ($role === 'pengguna'): ?>
+                                        <div class="bottom-content d-flex justify-content-end">
+                                            <a href="<?= base_url('detail_jasa/' . $order['id_service']) ?>" class="btn btn-outline-primary btn-sm w-50 mt-2 mx-1">Lihat Jasa</a>
+                                            <?php if ($order['status_pesanan'] === 'dalam proses'): ?>
+                                                <a href="<?= base_url('chat/view/' . $order['id_order']) ?>" class="btn btn-primary btn-sm w-25 mt-2 mx-1">Chat Penyedia</a>
+                                                <a href="<?= base_url('order/batalkan/' . $order['id_order']) ?>" class="btn btn-danger btn-sm w-25 mt-2 mx-1">Batalkan Pesanan</a>
+                                            <?php elseif ($order['status_pesanan'] === 'selesai'): ?>
+                                                <a href="<?= base_url('ulasan/tambah/' . $order['id_order']) ?>" class="btn btn-success btn-sm w-25 mt-2 mx-1">Beri Ulasan</a>
+                                                <a href="<?= base_url('pencarian') ?>" class="btn btn-secondary btn-sm w-25 mt-2 mx-1">Pesan Lagi</a>
+                                            <?php else: ?>
+                                                <button class="btn btn-danger btn-sm w-50 mt-2 mx-1" disabled>Dibatalkan</button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
-                            <div class="col-md-7">
-                                <h6 class="fw-bold mb-1">
-                                    <?= esc($order['judul_jasa']) ?>
-                                </h6>
-                                <p class="small text-muted mb-1">
-                                    Tanggal: <?= date('d M Y', strtotime($order['tanggal_order'])) ?>
-                                </p>
-                                <p class="small mb-2">
-                                    <?= esc($order['deskripsi_permintaan']) ?>
-                                </p>
-                                <span class="badge <?php if ($order['status_pesanan'] === 'dalam proses') echo 'bg-warning'; elseif ($order['status_pesanan'] === 'selesai') echo 'bg-success'; else echo 'bg-danger'; ?>">
-                                    <?= ucfirst($order['status_pesanan']) ?>
-                                </span>
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <a href="<?= base_url('detail_jasa/' . $order['id_service']) ?>" class="btn btn-outline-primary btn-sm">
-                                    Lihat Jasa
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
         <?php endif; ?>
 

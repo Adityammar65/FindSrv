@@ -16,51 +16,6 @@ class Chat extends BaseController
         $this->orderModel = new OrderModel();
     }
 
-    // MAIN VIEW
-    public function index()
-    {
-        $session = session();
-        $idUser = $session->get('id_user');
-        $role = $session->get('role');
-        
-        if (!$idUser) {
-            return redirect()->to('/login')
-                ->with('error', 'Silakan login terlebih dahulu');
-        }
-        
-        $perPage = 20;
-        
-        $builder = $this->orderModel
-            ->select('
-                orders.*,
-                services.judul_jasa,
-                services.gambar_layanan,
-                penyedia.username AS username_penyedia,
-                penyedia.email AS email_penyedia,
-                pencari.username AS username_pencari,
-                pencari.email AS email_pencari
-            ')
-            ->join('services', 'services.id_service = orders.id_service', 'left')
-            ->join('users AS penyedia', 'penyedia.id_user = services.id_penyedia', 'left')
-            ->join('users AS pencari', 'pencari.id_user = orders.id_pencari', 'left');
-        
-        if ($role === 'pengguna') {
-            $builder->where('orders.id_pencari', $idUser);
-        } else {
-            $builder->where('services.id_penyedia', $idUser);
-        }
-        
-        $orders = $builder
-            ->orderBy('orders.tanggal_order', 'DESC')
-            ->paginate($perPage);
-        
-        return view('chat/index', [
-            'orders' => $orders,
-            'pager'  => $this->orderModel->pager,
-            'role'   => $role
-        ]);
-    }
-
     // DETAIL VIEW
     public function detail($orderId)
     {

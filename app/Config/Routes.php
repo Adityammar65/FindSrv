@@ -32,11 +32,12 @@ $routes->get('riwayat', 'Pages::riwayat');
 // Service (Jasa) Routes
 $routes->get('detail_jasa/(:num)', 'Pages::detailJasa/$1');
 $routes->post('order_jasa', 'Pages::orderJasa');
+$routes->get('order/batalkan/(:num)', 'Pages::batalkanOrder/$1');
+$routes->post('order/status/(:num)', 'Pages::statusUpdate/$1');
 $routes->get('jasa/create', 'Pages::createJasa');
 $routes->post('jasa/simpan', 'Pages::simpanJasa');
 $routes->post('jasa/edit/(:num)', 'Pages::updateJasa/$1');
 $routes->post('jasa/hapus/(:num)', 'Pages::hapusJasa/$1');
-$routes->get('detail_jasa/(:num)', 'Pages::detailJasa/$1');
 $routes->get('analytic/(:num)', 'Pages::analyticJasa/$1');
 
 // Chat Routes

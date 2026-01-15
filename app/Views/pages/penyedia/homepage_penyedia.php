@@ -129,7 +129,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
-            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5 py-2 py-md-3">
+            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
@@ -152,10 +152,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <div class="profile-sidepanel ms-5">
@@ -178,7 +175,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <form action="<?= base_url('pencarian') ?>" method="get" class="d-flex mb-2 mb-lg-0 w-auto">
@@ -211,7 +208,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             <div class="row g-3 g-md-4">
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/terpercaya.jpg') ?>" class="rounded-start" alt="Terpercaya" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/terpercaya.jpg') ?>" class="rounded-start" alt="Terpercaya" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Terpercaya</h5>
@@ -225,7 +222,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/profesional.jpg') ?>" class="rounded-start" alt="Profesional" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/profesional.jpg') ?>" class="rounded-start" alt="Profesional" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Profesional</h5>
@@ -239,7 +236,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/komunikasi.jpg') ?>" class="rounded-start" alt="Komunikatif" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/komunikasi.jpg') ?>" class="rounded-start" alt="Komunikatif" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Komunikatif</h5>

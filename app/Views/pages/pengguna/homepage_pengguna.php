@@ -172,7 +172,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             <div class="row g-3 g-md-4">
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/terpercaya.jpg') ?>" class="rounded-start" alt="Terpercaya" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/terpercaya.jpg') ?>" class="rounded-start" alt="Terpercaya" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Terpercaya</h5>
@@ -183,7 +183,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/profesional.jpg') ?>" class="rounded-start" alt="Profesional" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/profesional.jpg') ?>" class="rounded-start" alt="Profesional" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Profesional</h5>
@@ -194,7 +194,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="card-media">
-                        <img src="<?= base_url('assets/images/homepage/komunikasi.jpg') ?>" class="rounded-start" alt="Komunikatif" style="height: 200px; object-fit: cover;">
+                        <img src="<?= base_url('assets/images/homepage/komunikasi.jpg') ?>" class="rounded-start" alt="Komunikatif" style="height: 100%; object-fit: cover;">
                         <div class="card rounded-end">
                             <div class="card-body">
                                 <h5 class="card-title">Komunikatif</h5>

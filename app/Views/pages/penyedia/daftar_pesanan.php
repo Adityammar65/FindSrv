@@ -20,6 +20,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <style>
         body {
@@ -74,7 +75,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <div class="container-fluid p-0 fade-in-fwd">
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
-            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5 py-2 py-md-3">
+            <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
                 <a class="navbar-brand" href="#">
                     <img src="<?= base_url('assets/images/icons/logo.png') ?>" style="width: 80px;">
                 </a>
@@ -97,10 +98,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link active" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <div class="profile-sidepanel ms-5">
@@ -123,7 +121,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat</a>
+                                <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
                         <form action="<?= base_url('pencarian') ?>" method="get" class="d-flex mb-2 mb-lg-0 w-auto">
@@ -141,35 +139,73 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </nav>
 
         <!-- PESANAN MASUK -->
-        <div class="container my-4 my-md-5">
-            <h3 class="fw-bold mb-4">Pesanan Masuk</h3>
+        <div class="container my-4">
+            <h5 class="fw-bold mb-4">Pesanan Masuk</h5>
 
             <!-- DASHBOARD PESANAN -->
             <div class="row g-3 g-md-4">
                 <?php foreach ($orders as $order): ?>
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4 <?php if ($order['status_pesanan'] === 'dibatalkan') echo 'd-none'; ?>">
                         <div class="card h-100 shadow-sm border-0 rounded-4">
                             <div class="card-body d-flex flex-column">
-                                <h5 class="fw-bold card-title">
-                                    <?= esc($order['judul_jasa']) ?>
-                                </h5>
-                                <p class="mb-1 small text-muted">
-                                    Pemesan: <strong><?= esc($order['username_pemesan']) ?></strong>
-                                </p>
-                                <p class="small flex-grow-1">
-                                    <?= esc($order['deskripsi_permintaan']) ?>
-                                </p>
-                                <span class="badge bg-warning text-dark mb-3 align-self-start">
-                                    <?= esc($order['status_pesanan']) ?>
-                                </span>
+                                <div class="top-content d-flex flex-row">
+                                    <div class="left-content d-flex flex-column">
+                                        <h5 class="fw-bold card-title">
+                                            <?= esc($order['judul_jasa']) ?>
+                                        </h5>
+                                        <p class="mb-1 small text-muted">
+                                            Pemesan: <strong><?= esc($order['username_pemesan']) ?></strong>
+                                        </p>
+                                        <p class="small flex-grow-1">
+                                            <?= esc($order['deskripsi_permintaan']) ?>
+                                        </p>
+                                        <span class="badge bg-warning text-dark mb-3 align-self-start">
+                                            <?= esc($order['status_pesanan']) ?>
+                                        </span>
+                                    </div>
+                                    <div class="right-content">
+                                        <img src="<?= base_url('uploads/jasa/' . $order['gambar_layanan']) ?>" style="width: 200px; height: 100px; object-fit: cover; border-radius: 8px;" alt="Gambar Layanan">
+                                    </div>
+                                </div>
                                 <div class="d-flex gap-2">
-                                    <a href="<?= base_url('chat') ?>" class="btn btn-sm btn-primary w-100">
+                                    <a href="<?= base_url('chat/view/' . $order['id_order']) ?>" class="btn btn-sm btn-primary w-100">
                                         Chat Pemesan
                                     </a>
-                                    <a href="<?= base_url('order/status/' . $order['id_order']) ?>" class="btn btn-sm btn-primary w-100">
-                                        Update Status
-                                    </a>
-                                </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-primary w-100 dropdown-toggle" type="button" id="dropdownStatus<?= $order['id_order'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Update Status
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownStatus<?= $order['id_order'] ?>">
+                                            <li>
+                                                <form action="<?= base_url('order/status/' . $order['id_order']) ?>" method="post" class="d-inline">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="status" value="dalam proses">
+                                                    <button type="submit" class="dropdown-item bg-warning" onclick="return confirm('Ubah status menjadi Dalam Proses?')">
+                                                        <span class="text-dark">Dalam Proses</span>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="<?= base_url('order/status/' . $order['id_order']) ?>" method="post" class="d-inline">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="status" value="selesai">
+                                                    <button type="submit" class="dropdown-item bg-success" onclick="return confirm('Ubah status menjadi Selesai?')">
+                                                        <span class="text-light">Selesai</span>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="<?= base_url('order/status/' . $order['id_order']) ?>" method="post" class="d-inline">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="status" value="dibatalkan">
+                                                    <button type="submit" class="dropdown-item bg-danger" onclick="return confirm('Ubah status menjadi Dibatalkan?')">
+                                                        <span class="text-light">Dibatalkan</span>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>                           
                                 <button class="btn btn-sm btn-success mt-2" data-bs-toggle="modal" data-bs-target="#hargaModal" data-order="<?= $order['id_order'] ?>">
                                     Tetapkan Harga
                                 </button>
@@ -248,27 +284,5 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            /* =======================
-            HARGA MODAL HANDLER
-            ======================= */
-            const hargaModal = document.getElementById('hargaModal');
-            const hargaOrderInput = document.getElementById('hargaOrderId');
-
-            if (hargaModal && hargaOrderInput) {
-                hargaModal.addEventListener('show.bs.modal', (event) => {
-                    const btn = event.relatedTarget;
-                    const orderId = btn.getAttribute('data-order');
-
-                    hargaOrderInput.value = orderId;
-                });
-            }
-        });
-    </script>
 </body>
 </html>
