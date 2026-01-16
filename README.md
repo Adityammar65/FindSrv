@@ -2,8 +2,6 @@
 
 FindSrv adalah sebuah aplikasi web yang dirancang untuk membantu pengguna dalam melakukan pencarian dan pengelolaan layanan atau resource tertentu secara efisien. Project ini dibangun menggunakan framework CodeIgniter dan mengikuti pola arsitektur MVC agar mudah dikembangkan dan dipelihara.
 
-> Silakan sesuaikan deskripsi ini dengan fungsi utama FindSrv yang sebenarnya.
-
 ---
 
 ## 📌 Fitur Utama
