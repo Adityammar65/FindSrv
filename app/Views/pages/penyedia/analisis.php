@@ -15,9 +15,8 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-    <!-- STYLESHEET & SCRIPTS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.js" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
 
@@ -78,10 +77,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 </button>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard Jasa</a>
+                                <a class="nav-link active" href="<?= base_url('dashboard') ?>">Dashboard Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
+                                <a class="nav-link" href="<?= base_url('daftar_pesanan') ?>">Daftar Pesanan</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
@@ -104,9 +103,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('pencarian') ?>">Cari Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
@@ -124,7 +120,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         </nav>
 
-        <div class="container my-4">
+        <div class="container my-3">
             <div class="mb-4">
                 <h4 class="fw-bold mb-1">Analisis Jasa</h4>
                 <small class="text-muted">
@@ -181,9 +177,50 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     </div>
                 </div>
             </div>
+
+            <!-- RATINGS SECTION WITH SCROLLSPY -->
+            <div class="row mt-5 mb-4">
+                <div class="col-12">
+                    <h5 class="fw-bold mb-3">Ulasan Pelanggan</h5>
+                </div>
+            </div>
+
+            <div class="row" data-bs-spy="scroll" data-bs-target="#ratingsSidebar" data-bs-offset="0" tabindex="0">
+                <div class="col-md-12">
+                    <?php if (empty($ratings)): ?>
+                        <div class="alert alert-secondary">
+                            Belum ada ulasan untuk jasa ini. Mulai dapatkan ulasan dari pelanggan Anda!
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($ratings as $index => $rating): ?>
+                            <div id="rating<?= $index ?>" class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <h6 class="fw-bold mb-1"><?= esc($rating['username']) ?></h6>
+                                        <div class="text-warning mb-2">
+                                            <?php for ($i = 0; $i < $rating['skor_bintang']; $i++): ?>
+                                                ★
+                                            <?php endfor; ?>
+                                            <?php for ($i = $rating['skor_bintang']; $i < 5; $i++): ?>
+                                                ☆
+                                            <?php endfor; ?>
+                                            <small class="text-muted ms-2">
+                                                <?= date('d M Y', strtotime($rating['tanggal_ulasan'])) ?>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">
+                                        <?= esc($rating['ulasan_teks']) ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
         
-        <div class="row d-flex justify-content-center">
+        <div class="row d-flex justify-content-center mt-4">
             <div class="col-4">
                 <a href="<?= base_url('dashboard') ?>"
                 class="btn btn-primary w-100">
@@ -193,45 +230,102 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </div>
 
         <!-- FOOTER -->
-        <footer class="bg-light mt-5 pt-5 fade-in-fwd">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-4 mb-4">
-                    <img src="<?= base_url('assets/images/icons/logo.png') ?>" alt="Logo" style="width: 90px;">
-                    <p class="text-muted mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+        <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-4">
+                        <img src="<?= base_url('assets/images/icons/logo_light.png') ?>" alt="Logo" style="width: 90px;">
+                        <p class="text-light mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+                    </div>
+                    <div class="col-12 col-md-2 mb-4">
+                        <h6 class="fw-bold text-light">Menu</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-light">Beranda</a></li>
+                            <?php if ($role === 'pengguna'): ?>
+                                <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-light">Cari Jasa</a></li>
+                            <?php else: ?>
+                                <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-light">Dashboard Jasa</a></li>
+                                <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-light">Daftar Pesanan</a></li>
+                            <?php endif; ?>
+                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-light">Riwayat</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <h6 class="fw-bold text-light">Bantuan</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-light">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-light">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-light">Kebijakan Privasi</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <h6 class="fw-bold text-light">Kontak</h6>
+                        <p class="text-light mb-1">Email: support@findsrv.id</p>
+                        <p class="text-light">Instagram: @findsrv.id</p>
+                    </div>
                 </div>
-                <div class="col-12 col-md-2 mb-4">
-                    <h6 class="fw-bold">Menu</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
-                        <?php if ($role === 'pengguna'): ?>
-                            <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-muted">Cari Jasa</a></li>
-                        <?php else: ?>
-                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
-                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
-                        <?php endif; ?>
-                        <li><a href="<?= base_url('chat') ?>" class="text-decoration-none text-muted">Chat</a></li>
-                        <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Bantuan</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Kontak</h6>
-                    <p class="text-muted mb-1">Email: support@findsrv.id</p>
-                    <p class="text-muted">Instagram: @findsrv.id</p>
-                </div>
+                <hr class="border border-white">
+                <div class="text-center text-light pb-3">© 2025 FindSrv. All rights reserved.</div>
             </div>
-            <hr>
-            <div class="text-center text-muted pb-3">© 2025 FindSrv. All rights reserved.</div>
-        </div>
-    </footer>
+        </footer>
     </div>
+
+    <style>
+        /* SCROLLSPY STYLING */
+        #ratingsSidebar {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        #ratingsSidebar .list-group-item {
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        #ratingsSidebar .list-group-item.active {
+            background-color: #e7f3ff;
+            border-left-color: #0d6efd;
+            border-radius: 0;
+        }
+
+        #ratingsSidebar .list-group-item:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* SCROLLBAR STYLING */
+        #ratingsSidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #ratingsSidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #ratingsSidebar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        #ratingsSidebar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            #ratingsSidebar {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </body>
 </html>

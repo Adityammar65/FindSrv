@@ -104,9 +104,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('pencarian') ?>">Cari Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
@@ -125,9 +122,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </nav>
 
         <!-- DASHBOARD JASA -->
-        <div class="container my-5">
+        <div class="container my-3">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold">Dashboard Jasa</h3>
+                <h5 class="fw-bold">Dashboard Jasa</h5>
                 <button
                     class="btn btn-primary fw-bold"
                     data-bs-toggle="modal"
@@ -213,43 +210,42 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+    <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="<?= base_url('assets/images/icons/logo.png') ?>" alt="Logo" style="width: 90px;">
-                    <p class="text-muted mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+                    <img src="<?= base_url('assets/images/icons/logo_light.png') ?>" alt="Logo" style="width: 90px;">
+                    <p class="text-light mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
                 </div>
                 <div class="col-12 col-md-2 mb-4">
-                    <h6 class="fw-bold">Menu</h6>
+                    <h6 class="fw-bold text-light">Menu</h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                        <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-light">Beranda</a></li>
                         <?php if ($role === 'pengguna'): ?>
-                            <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                            <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-light">Cari Jasa</a></li>
                         <?php else: ?>
-                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
-                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
+                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-light">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-light">Daftar Pesanan</a></li>
                         <?php endif; ?>
-                        <li><a href="<?= base_url('chat') ?>" class="text-decoration-none text-muted">Chat</a></li>
-                        <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
+                        <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-light">Riwayat</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Bantuan</h6>
+                    <h6 class="fw-bold text-light">Bantuan</h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-light">Pusat Bantuan</a></li>
+                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-light">Syarat & Ketentuan</a></li>
+                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-light">Kebijakan Privasi</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Kontak</h6>
-                    <p class="text-muted mb-1">Email: support@findsrv.id</p>
-                    <p class="text-muted">Instagram: @findsrv.id</p>
+                    <h6 class="fw-bold text-light">Kontak</h6>
+                    <p class="text-light mb-1">Email: support@findsrv.id</p>
+                    <p class="text-light">Instagram: @findsrv.id</p>
                 </div>
             </div>
-            <hr>
-            <div class="text-center text-muted pb-3">© 2025 FindSrv. All rights reserved.</div>
+            <hr class="border border-white">
+            <div class="text-center text-light pb-3">© 2025 FindSrv. All rights reserved.</div>
         </div>
     </footer>
 </body>
@@ -258,14 +254,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <div class="modal fade" id="modalTambahJasa" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-4">
-
-            <!-- HEADER -->
             <div class="modal-header">
                 <h5 class="modal-title fw-bold">Tambah Jasa Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <!-- FORM -->
             <form
                 action="<?= base_url('jasa/simpan') ?>"
                 method="post"
@@ -277,7 +269,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     data-bs-offset="0"
                     tabindex="0"
                 >
-                    <!-- JUDUL -->
                     <section id="judul">
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Judul Jasa</label>
@@ -289,8 +280,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             >
                         </div>
                     </section>
-
-                    <!-- KATEGORI -->
                     <section id="kategori">
                         <div class="mb-4">
                             <label class="form-label fw-semibold mb-2">
@@ -352,8 +341,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             </div>
                         </div>
                     </section>
-
-                    <!-- DESKRIPSI -->
                     <section id="deskripsi">
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Deskripsi Jasa</label>
@@ -365,8 +352,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             ></textarea>
                         </div>
                     </section>
-
-                    <!-- GAMBAR -->
                     <section id="gambar">
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Gambar Jasa (Opsional)</label>
@@ -379,8 +364,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         </div>
                     </section>
                 </div>
-
-                <!-- FOOTER -->
                 <div class="modal-footer">
                     <button
                         type="button"
@@ -395,7 +378,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         Simpan Jasa
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
@@ -405,30 +387,20 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 <div class="modal fade" id="editJasaModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-4">
-
-            <form id="editJasaForm"
-                  method="post"
-                  enctype="multipart/form-data">
-
+            <form id="editJasaForm" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">Edit Jasa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-                
-                    <!-- JUDUL -->
                     <div class="mb-3">
                         <label class="form-label">Judul</label>
                         <input type="text" name="judul_jasa" id="editJudul" class="form-control" required>
                     </div>
-                
-                    <!-- KATEGORI -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold mb-2">
                             Kategori Jasa <span class="text-muted">(Pilih maksimal 3)</span>
                         </label>
-
                         <div class="row">
                             <?php
                             $categories = [
@@ -483,8 +455,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                             <?php endforeach ?>
                         </div>
                     </div>
-                
-                    <!-- DESKRIPSI -->
                     <div class="mb-3">
                         <label class="form-label">Deskripsi</label>
                         <textarea name="deskripsi_jasa"
@@ -493,8 +463,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                   class="form-control"
                                   required></textarea>
                     </div>
-                
-                    <!-- GANTI GAMBAR JASA -->
                     <div class="mb-3">
                         <label class="form-label">Ganti Gambar</label>
                         <img id="previewGambar"
@@ -507,7 +475,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     </div>
                 </div>
 
-                <!-- FOOTER -->
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary fw-bold px-4">
                         Simpan

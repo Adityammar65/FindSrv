@@ -31,19 +31,171 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         .main-content {
             flex: 1;
         }
+        
         @media (max-width: 768px) {
-            .navbar-brand img {
-                width: 60px !important;
+            .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
             }
-            .navbar {
-                padding: 0.75rem 0 !important;
+
+            h5 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
             }
+
+            .card {
+                border-radius: 0.5rem !important;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .top-content {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .left-content {
+                width: 100%;
+            }
+
+            .right-content {
+                width: 100%;
+            }
+
+            .right-content img {
+                width: 100% !important;
+                height: 120px !important;
+                object-fit: cover;
+            }
+
             .card-body .d-flex {
                 flex-direction: column;
+                gap: 0.5rem;
             }
+
             .card-body .btn {
-                width: 100% !important;
+                width: 100%;
+                font-size: 0.875rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .btn-sm {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown .btn {
+                width: 100%;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.5rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
                 margin-bottom: 0.5rem;
+            }
+
+            p {
+                font-size: 0.85rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .small {
+                font-size: 0.75rem;
+            }
+
+            .mb-1 {
+                margin-bottom: 0.25rem;
+            }
+
+            .mb-3 {
+                margin-bottom: 0.75rem;
+            }
+
+            .gap-2 {
+                gap: 0.5rem;
+            }
+
+            .modal-sm {
+                --bs-modal-width: 90vw;
+                max-width: 90vw;
+            }
+
+            .modal-dialog-centered {
+                min-height: calc(var(--bs-modal-width) * 0.5);
+            }
+
+            .modal-body input {
+                font-size: 0.9rem;
+            }
+
+            .form-label {
+                font-size: 0.85rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .row.g-3 {
+                --bs-gutter-x: 0.75rem;
+                --bs-gutter-y: 0.75rem;
+            }
+
+            .col-12 {
+                padding-left: 0.375rem;
+                padding-right: 0.375rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            h5 {
+                font-size: 1.1rem;
+            }
+
+            .card-body {
+                padding: 0.75rem;
+            }
+
+            .card-title {
+                font-size: 0.9rem;
+            }
+
+            .btn-sm {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .right-content img {
+                height: 100px !important;
+            }
+
+            p, .small {
+                font-size: 0.8rem;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.4rem;
+            }
+
+            .gap-2 {
+                gap: 0.35rem;
+            }
+
+            .top-content {
+                gap: 0.5rem;
             }
         }
     </style>
@@ -118,9 +270,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                 <a class="nav-link" href="<?= base_url('pencarian') ?>">Cari Jasa</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('chat') ?>">Chat</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('riwayat') ?>">Riwayat Pesanan</a>
                             </li>
                         </ul>
@@ -142,10 +291,9 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <div class="container my-4">
             <h5 class="fw-bold mb-4">Pesanan Masuk</h5>
 
-            <!-- DASHBOARD PESANAN -->
             <div class="row g-3 g-md-4">
                 <?php foreach ($orders as $order): ?>
-                    <div class="col-12 col-md-6 col-lg-4 <?php if ($order['status_pesanan'] === 'dibatalkan') echo 'd-none'; ?>">
+                    <div class="col-12 col-md-6 col-lg-4 <?php if ($order['status_pesanan'] === 'dibatalkan' || $order['status_pesanan'] === 'selesai') echo 'd-none'; ?>">
                         <div class="card h-100 shadow-sm border-0 rounded-4">
                             <div class="card-body d-flex flex-column">
                                 <div class="top-content d-flex flex-row">
@@ -205,7 +353,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                             </li>
                                         </ul>
                                     </div>
-                                </div>                           
+                                </div>
                                 <button class="btn btn-sm btn-success mt-2" data-bs-toggle="modal" data-bs-target="#hargaModal" data-order="<?= $order['id_order'] ?>">
                                     Tetapkan Harga
                                 </button>
@@ -217,43 +365,42 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </div>
 
         <!-- FOOTER -->
-        <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+        <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-md-4 mb-4">
-                        <img src="<?= base_url('assets/images/icons/logo.png') ?>" alt="Logo" style="width: 90px;">
-                        <p class="text-muted mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+                        <img src="<?= base_url('assets/images/icons/logo_light.png') ?>" alt="Logo" style="width: 90px;">
+                        <p class="text-light mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
                     </div>
                     <div class="col-12 col-md-2 mb-4">
-                        <h6 class="fw-bold">Menu</h6>
+                        <h6 class="fw-bold text-light">Menu</h6>
                         <ul class="list-unstyled">
-                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-light">Beranda</a></li>
                             <?php if ($role === 'pengguna'): ?>
-                                <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                                <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-light">Cari Jasa</a></li>
                             <?php else: ?>
-                                <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
-                                <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
+                                <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-light">Dashboard Jasa</a></li>
+                                <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-light">Daftar Pesanan</a></li>
                             <?php endif; ?>
-                            <li><a href="<?= base_url('chat') ?>" class="text-decoration-none text-muted">Chat</a></li>
-                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
+                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-light">Riwayat</a></li>
                         </ul>
                     </div>
                     <div class="col-12 col-md-3 mb-4">
-                        <h6 class="fw-bold">Bantuan</h6>
+                        <h6 class="fw-bold text-light">Bantuan</h6>
                         <ul class="list-unstyled">
-                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-light">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-light">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-light">Kebijakan Privasi</a></li>
                         </ul>
                     </div>
                     <div class="col-12 col-md-3 mb-4">
-                        <h6 class="fw-bold">Kontak</h6>
-                        <p class="text-muted mb-1">Email: support@findsrv.id</p>
-                        <p class="text-muted">Instagram: @findsrv.id</p>
+                        <h6 class="fw-bold text-light">Kontak</h6>
+                        <p class="text-light mb-1">Email: support@findsrv.id</p>
+                        <p class="text-light">Instagram: @findsrv.id</p>
                     </div>
                 </div>
-                <hr>
-                <div class="text-center text-muted pb-3">© 2025 FindSrv. All rights reserved.</div>
+                <hr class="border border-white">
+                <div class="text-center text-light pb-3">© 2025 FindSrv. All rights reserved.</div>
             </div>
         </footer>
     </div>
@@ -262,21 +409,22 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <div class="modal fade" id="hargaModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <form method="post" action="<?= base_url('order/setHarga') ?>">
+                <form method="post" action="<?= base_url('order/setHarga/' . $order['id_order']) ?>">
+                    <?= csrf_field() ?>
                     <div class="modal-header">
-                        <h5 class="modal-title">Tetapkan Harga</h5>
+                        <h5 class="modal-title">Tentukan Harga</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="id_order" id="hargaOrderId">
                         <label class="form-label">Harga (Rp)</label>
-                        <input type="number" name="harga" class="form-control" required>
+                        <input type="number" name="harga" class="form-control" required placeholder="Contoh: 500000">
+                        <small class="text-muted">Masukkan harga dalam Rupiah</small>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Batal
                         </button>
-                        <button class="btn btn-success">
+                        <button type="submit" class="btn btn-success">
                             Simpan
                         </button>
                     </div>

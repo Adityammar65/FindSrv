@@ -34,13 +34,15 @@ $routes->get('detail_jasa/(:num)', 'Pages::detailJasa/$1');
 $routes->post('order_jasa', 'Pages::orderJasa');
 $routes->get('order/batalkan/(:num)', 'Pages::batalkanOrder/$1');
 $routes->post('order/status/(:num)', 'Pages::statusUpdate/$1');
+$routes->post('order/setHarga/(:num)', 'Pages::setHarga/$1');
+$routes->post('order/bayar/(:num)', 'Pages::bayarOrder/$1');
 $routes->get('jasa/create', 'Pages::createJasa');
 $routes->post('jasa/simpan', 'Pages::simpanJasa');
 $routes->post('jasa/edit/(:num)', 'Pages::updateJasa/$1');
 $routes->post('jasa/hapus/(:num)', 'Pages::hapusJasa/$1');
+$routes->post('ulasan/tambah/(:num)', 'Pages::tambahUlasan/$1');
 $routes->get('analytic/(:num)', 'Pages::analyticJasa/$1');
 
 // Chat Routes
-$routes->get('chat', 'Chat::index');
 $routes->get('chat/view/(:num)', 'Chat::view/$1');
 $routes->post('chat/send/(:num)', 'Chat::send/$1');

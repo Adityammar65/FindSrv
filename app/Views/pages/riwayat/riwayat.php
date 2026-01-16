@@ -23,7 +23,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
     <title>Riwayat</title>
     <style>
-        /* Responsive styles for mobile devices */
         @media (max-width: 768px) {
             .list-group {
                 margin: 0 0.5rem;
@@ -148,8 +147,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                     <div class="col-12 mb-3">
                         <a href="<?= base_url('chat/detail/' . $order['id_order']) ?>" class="text-decoration-none">
                             <div class="card shadow-sm border-0 rounded-3 h-100">
-                                <div class="card-body p-3 d-flex flex-column">                                    
-                                    <!-- Chat Info -->
+                                <div class="card-body p-3 d-flex flex-column">
                                     <div class="flex-grow-1">
                                         <div class="top-content d-flex flex-row align-items-center">
                                             <h6 class="fw-bold text-dark m-0">
@@ -172,7 +170,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                         <div class="col-md-6 text-center my-2 d-flex justify-content-between align-items-center flex-row">
                                             <img src="<?= $order['gambar_layanan'] ? base_url('uploads/jasa/' . $order['gambar_layanan']) : base_url('assets/images/default-service.jpg') ?>" class="img-fluid rounded" style="height:90px; width:50%; object-fit:cover;">
                                             <p class="text-dark fw-bold">Total Harga: 
-                                                <?php if ($order['harga_jasa'] !== null) echo number_format($order['harga_jasa'], 0, ',', '.'); 
+                                                <?php if ($order['harga_jasa'] !== null) echo 'Rp' . number_format($order['harga_jasa'], 0, ',', '.'); 
                                                 elseif ($order['status_pesanan'] === 'dibatalkan') echo 'Pesanan Dibatalkan';
                                                 else echo 'Harga Belum ditetapkan'; ?>
                                             </p>
@@ -185,12 +183,59 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                                     <?php if ($role === 'pengguna'): ?>
                                         <div class="bottom-content d-flex justify-content-end">
                                             <a href="<?= base_url('detail_jasa/' . $order['id_service']) ?>" class="btn btn-outline-primary btn-sm w-50 mt-2 mx-1">Lihat Jasa</a>
+                                            <?php
+                                                $isPaid = $order['status_pesanan'] === 'selesai';
+                                                $isCancelled = $order['status_pesanan'] === 'dibatalkan';
+                                                $hasPrice = $order['harga_jasa'] !== null && $order['harga_jasa'] > 0;
+                                                $canPay = $hasPrice && !$isPaid && !$isCancelled;
+                                            ?>
+                                            <form action="<?= base_url('order/bayar/' . $order['id_order']) ?>" method="POST" class="d-inline" id="payForm<?= $order['id_order'] ?>">
+                                                <?= csrf_field() ?>
+                                                <button type="submit" 
+                                                        class="btn btn-sm mt-2 mx-1 px-5
+                                                            <?php if ($isPaid): ?>btn-success
+                                                            <?php elseif ($isCancelled): ?>btn-secondary
+                                                            <?php elseif (!$hasPrice): ?>btn-outline-secondary
+                                                            <?php else: ?>btn-outline-success<?php endif; ?>"
+                                                        <?php if (!$canPay): ?>disabled<?php endif; ?>
+                                                        <?php if ($canPay): ?>
+                                                            onclick="return confirmPayment(<?= $order['harga_jasa'] ?>)"
+                                                        <?php endif; ?>>
+                                                    <?php if ($isPaid): ?>
+                                                        <i class="bi bi-check-circle"></i> Lunas
+                                                    <?php elseif ($isCancelled): ?>
+                                                        <i class="bi bi-x-circle"></i> Dibatalkan
+                                                    <?php elseif (!$hasPrice): ?>
+                                                        <i class="bi bi-clock"></i> Bayar
+                                                    <?php else: ?>
+                                                        <i class="bi bi-credit-card"></i> Bayar
+                                                    <?php endif; ?>
+                                                </button>
+                                            </form>
                                             <?php if ($order['status_pesanan'] === 'dalam proses'): ?>
                                                 <a href="<?= base_url('chat/view/' . $order['id_order']) ?>" class="btn btn-primary btn-sm w-25 mt-2 mx-1">Chat Penyedia</a>
                                                 <a href="<?= base_url('order/batalkan/' . $order['id_order']) ?>" class="btn btn-danger btn-sm w-25 mt-2 mx-1">Batalkan Pesanan</a>
                                             <?php elseif ($order['status_pesanan'] === 'selesai'): ?>
-                                                <a href="<?= base_url('ulasan/tambah/' . $order['id_order']) ?>" class="btn btn-success btn-sm w-25 mt-2 mx-1">Beri Ulasan</a>
-                                                <a href="<?= base_url('pencarian') ?>" class="btn btn-secondary btn-sm w-25 mt-2 mx-1">Pesan Lagi</a>
+                                                <?php
+                                                    $canReview = $order['status_pesanan'] === 'selesai' && !($order['has_review'] ?? false);
+                                                    $hasReview = ($order['has_review'] ?? false) == 1;
+                                                ?>
+                                                <button type="button" 
+                                                    class="btn btn-sm w-25 mt-2 mx-1 <?= $canReview ? 'btn-success' : 'btn-secondary' ?>"
+                                                    data-bs-toggle="<?= $canReview ? 'modal' : '' ?>" 
+                                                    data-bs-target="<?= $canReview ? '#ulasanModal' . $order['id_order'] : '' ?>"
+                                                    <?= !$canReview ? 'disabled' : '' ?>
+                                                    title="<?= $hasReview ? 'Anda sudah memberikan ulasan' : ($order['status_pesanan'] !== 'selesai' ? 'Selesaikan pesanan terlebih dahulu' : 'Klik untuk memberikan ulasan') ?>">
+                                                    
+                                                    <?php if ($hasReview): ?>
+                                                        <i class="bi bi-check-circle"></i> Sudah Diulas
+                                                    <?php elseif ($order['status_pesanan'] === 'selesai'): ?>
+                                                        <i class="bi bi-star"></i> Beri Ulasan
+                                                    <?php else: ?>
+                                                        <i class="bi bi-lock"></i> Beri Ulasan
+                                                    <?php endif; ?>
+                                                </button>
+                                                <a href="<?= base_url('detail_jasa/' . $order['id_service']) ?>" class="btn btn-primary btn-sm w-25 mt-2 mx-1">Pesan Lagi</a>
                                             <?php else: ?>
                                                 <button class="btn btn-danger btn-sm w-50 mt-2 mx-1" disabled>Dibatalkan</button>
                                             <?php endif; ?>
@@ -206,45 +251,151 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         <?php endif; ?>
 
         <!-- FOOTER -->
-        <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+        <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-md-4 mb-4">
-                        <img src="<?= base_url('assets/images/icons/logo.png') ?>" alt="Logo" style="width: 90px;">
-                        <p class="text-muted mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+                        <img src="<?= base_url('assets/images/icons/logo_light.png') ?>" alt="Logo" style="width: 90px;">
+                        <p class="text-light mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
                     </div>
                     <div class="col-12 col-md-2 mb-4">
-                        <h6 class="fw-bold">Menu</h6>
+                        <h6 class="fw-bold text-light">Menu</h6>
                         <ul class="list-unstyled">
-                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                            <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-light">Beranda</a></li>
                             <?php if ($role === 'pengguna'): ?>
-                                <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                                <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-light">Cari Jasa</a></li>
                             <?php else: ?>
-                                <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
-                                <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
+                                <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-light">Dashboard Jasa</a></li>
+                                <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-light">Daftar Pesanan</a></li>
                             <?php endif; ?>
-                            <li><a href="<?= base_url('chat') ?>" class="text-decoration-none text-muted">Chat</a></li>
-                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
+                            <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-light">Riwayat</a></li>
                         </ul>
                     </div>
                     <div class="col-12 col-md-3 mb-4">
-                        <h6 class="fw-bold">Bantuan</h6>
+                        <h6 class="fw-bold text-light">Bantuan</h6>
                         <ul class="list-unstyled">
-                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                            <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-light">Pusat Bantuan</a></li>
+                            <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-light">Syarat & Ketentuan</a></li>
+                            <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-light">Kebijakan Privasi</a></li>
                         </ul>
                     </div>
                     <div class="col-12 col-md-3 mb-4">
-                        <h6 class="fw-bold">Kontak</h6>
-                        <p class="text-muted mb-1">Email: support@findsrv.id</p>
-                        <p class="text-muted">Instagram: @findsrv.id</p>
+                        <h6 class="fw-bold text-light">Kontak</h6>
+                        <p class="text-light mb-1">Email: support@findsrv.id</p>
+                        <p class="text-light">Instagram: @findsrv.id</p>
                     </div>
                 </div>
-                <hr>
-                <div class="text-center text-muted pb-3">© 2025 FindSrv. All rights reserved.</div>
+                <hr class="border border-white">
+                <div class="text-center text-light pb-3">© 2025 FindSrv. All rights reserved.</div>
             </div>
         </footer>
     </div>
+
+    <!-- RATING MODAL -->
+    <div class="modal fade" id="ulasanModal<?= $order['id_order'] ?>" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="<?= base_url('ulasan/tambah/' . $order['id_order']) ?>">
+                    <?= csrf_field() ?>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Beri Ulasan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <h6 class="fw-bold"><?= esc($order['judul_jasa']) ?></h6>
+                            <small class="text-muted">Penyedia: <?= esc($order['username_penyedia']) ?></small>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Rating <span class="text-danger">*</span></label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5-<?= $order['id_order'] ?>" name="skor_bintang" value="5" required>
+                                <label for="star5-<?= $order['id_order'] ?>" title="5 bintang">★</label>
+                                
+                                <input type="radio" id="star4-<?= $order['id_order'] ?>" name="skor_bintang" value="4">
+                                <label for="star4-<?= $order['id_order'] ?>" title="4 bintang">★</label>
+                                
+                                <input type="radio" id="star3-<?= $order['id_order'] ?>" name="skor_bintang" value="3">
+                                <label for="star3-<?= $order['id_order'] ?>" title="3 bintang">★</label>
+                                
+                                <input type="radio" id="star2-<?= $order['id_order'] ?>" name="skor_bintang" value="2">
+                                <label for="star2-<?= $order['id_order'] ?>" title="2 bintang">★</label>
+                                
+                                <input type="radio" id="star1-<?= $order['id_order'] ?>" name="skor_bintang" value="1">
+                                <label for="star1-<?= $order['id_order'] ?>" title="1 bintang">★</label>
+                            </div>
+                            <small class="text-muted">Klik bintang untuk memberi rating</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ulasan <span class="text-danger">*</span></label>
+                            <textarea name="ulasan_teks" 
+                                    class="form-control" 
+                                    rows="4" 
+                                    placeholder="Ceritakan pengalaman Anda dengan jasa ini..."
+                                    required
+                                    minlength="10"
+                                    maxlength="500"></textarea>
+                            <small class="text-muted">Minimal 10 karakter, maksimal 500 karakter</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-send"></i> Kirim Ulasan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 5px;
+        font-size: 2.5rem;
+    }
+
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        color: #ddd;
+        transition: color 0.2s;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+
+    .star-rating input[type="radio"]:checked ~ label {
+        color: #ffc107;
+    }
+    </style>
+
+    <script>
+        function confirmPayment(amount) {
+            const formatted = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+            
+            return confirm(
+                'Konfirmasi Pembayaran\n\n' +
+                'Total: ' + formatted + '\n\n' +
+                'Setelah dibayar, status pesanan akan berubah menjadi Selesai.\n\n' +
+                'Lanjutkan pembayaran?'
+            );
+        }
+    </script>
 </body>
 </html>

@@ -25,7 +25,6 @@ if (isset($order['id_service'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- STYLESHEET & SCRIPTS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="<?= base_url('assets/css/styles.css') ?>">
@@ -95,7 +94,7 @@ if (isset($order['id_service'])) {
         </div>
     </div>
 
-    <!-- NAVBAR & CONTENT -->
+    <!-- NAVBAR -->
     <div class="container-fluid p-0 fade-in-fwd">
         <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light fw-bold">
             <div class="container-fluid ps-3 ps-md-5 pe-3 pe-md-5">
@@ -173,7 +172,6 @@ if (isset($order['id_service'])) {
                     <p class="text-center text-muted">Belum ada pesan. Mulai percakapan!</p>
                 <?php else: ?>
                     <?php foreach ($chats as $chat): ?>
-                        <!-- Message from Pengguna -->
                         <?php if (!empty($chat['pesan_pengguna'])): ?>
                             <div class="message-wrapper <?= $role === 'pengguna' ? 'pengguna' : 'penyedia' ?>">
                                 <div class="bubble">
@@ -186,8 +184,7 @@ if (isset($order['id_service'])) {
                         <?php endif; ?>
 
                         <!-- Message from Penyedia -->
-                        <?php if (!empty($chat['pesan_penyedia'])): ?>
-                            <div class="message-wrapper <?= $role === 'penyedia' ? 'pengguna' : 'penyedia' ?>">
+                        <   <div class="message-wrapper <?= $role === 'penyedia' ? 'pengguna' : 'penyedia' ?>">
                                 <div class="bubble">
                                     <?= esc($chat['pesan_penyedia']) ?>
                                 </div>
@@ -215,49 +212,48 @@ if (isset($order['id_service'])) {
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-light mt-5 pt-5 fade-in-fwd">
+    <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="<?= base_url('assets/images/icons/logo.png') ?>" alt="Logo" style="width: 90px;">
-                    <p class="text-muted mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
+                    <img src="<?= base_url('assets/images/icons/logo_light.png') ?>" alt="Logo" style="width: 90px;">
+                    <p class="text-light mt-3">FindSrv adalah platform yang menghubungkan pengguna dengan penyedia jasa profesional secara aman dan terpercaya.</p>
                 </div>
                 <div class="col-12 col-md-2 mb-4">
-                    <h6 class="fw-bold">Menu</h6>
+                    <h6 class="fw-bold text-light">Menu</h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-muted">Beranda</a></li>
+                        <li><a href="<?= base_url('home_pengguna') ?>" class="text-decoration-none text-light">Beranda</a></li>
                         <?php if ($role === 'pengguna'): ?>
-                            <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-muted">Cari Jasa</a></li>
+                            <li><a href="<?= base_url('pencarian') ?>" class="text-decoration-none text-light">Cari Jasa</a></li>
                         <?php else: ?>
-                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-muted">Dashboard Jasa</a></li>
-                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-muted">Daftar Pesanan</a></li>
+                            <li><a href="<?= base_url('dashboard') ?>" class="text-decoration-none text-light">Dashboard Jasa</a></li>
+                            <li><a href="<?= base_url('daftar_pesanan') ?>" class="text-decoration-none text-light">Daftar Pesanan</a></li>
                         <?php endif; ?>
-                        <li><a href="<?= base_url('chat') ?>" class="text-decoration-none text-muted">Chat</a></li>
-                        <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-muted">Riwayat</a></li>
+                        <li><a href="<?= base_url('riwayat') ?>" class="text-decoration-none text-light">Riwayat</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Bantuan</h6>
+                    <h6 class="fw-bold text-light">Bantuan</h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-muted">Pusat Bantuan</a></li>
-                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-muted">Syarat & Ketentuan</a></li>
-                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-muted">Kebijakan Privasi</a></li>
+                        <li><a href="<?= base_url('bantuan') ?>" class="text-decoration-none text-light">Pusat Bantuan</a></li>
+                        <li><a href="<?= base_url('syarat_ketentuan') ?>" class="text-decoration-none text-light">Syarat & Ketentuan</a></li>
+                        <li><a href="<?= base_url('kebijakan') ?>" class="text-decoration-none text-light">Kebijakan Privasi</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md-3 mb-4">
-                    <h6 class="fw-bold">Kontak</h6>
-                    <p class="text-muted mb-1">Email: support@findsrv.id</p>
-                    <p class="text-muted">Instagram: @findsrv.id</p>
+                    <h6 class="fw-bold text-light">Kontak</h6>
+                    <p class="text-light mb-1">Email: support@findsrv.id</p>
+                    <p class="text-light">Instagram: @findsrv.id</p>
                 </div>
             </div>
-            <hr>
-            <div class="text-center text-muted pb-3">© 2025 FindSrv. All rights reserved.</div>
+            <hr class="border border-white">
+            <div class="text-center text-light pb-3">© 2025 FindSrv. All rights reserved.</div>
         </div>
     </footer>
 
     <script>
         // Auto-scroll to bottom of chat
-        const chatBox = document.getElementById('chatBox');
+        consUTO-SCROLL TO BOTTOM OF CHATentById('chatBox');
         chatBox.scrollTop = chatBox.scrollHeight;
     </script>
 

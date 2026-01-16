@@ -6,6 +6,7 @@ use App\Models\ServiceModel;
 use App\Models\OrderModel;
 use App\Models\ChatModel;
 use App\Models\AnalyticModel;
+use App\Models\RatingModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Pages extends BaseController
@@ -14,6 +15,7 @@ class Pages extends BaseController
     protected $orderModel;
     protected $chatModel;
     protected $analyticModel;
+    protected $ratingModel;
     
     private const MAX_CATEGORIES = 3;
     private const MAX_FILE_SIZE = 5120;
@@ -26,6 +28,7 @@ class Pages extends BaseController
         $this->orderModel = new OrderModel();
         $this->chatModel = new ChatModel();
         $this->analyticModel = new AnalyticModel();
+        $this->ratingModel = new RatingModel();
         
         helper(['text', 'form']);
     }
@@ -281,10 +284,12 @@ class Pages extends BaseController
 
         $this->incrementViewCount($id);
         $analytic = $this->analyticModel->where('id_service', $id)->first();
+        $ratings = $this->ratingModel->getRatingsByService($id);
 
         $data = [
             'service' => $service,
-            'analytic' => $analytic
+            'analytic' => $analytic,
+            'ratings' => $ratings
         ];
 
         return view('pages/pengguna/detail_jasa', $data);
@@ -386,20 +391,17 @@ class Pages extends BaseController
         
         $newStatus = $this->request->getPost('status');
         
-        // Validate status
         $validStatuses = ['dalam proses', 'selesai', 'dibatalkan'];
         if (!in_array($newStatus, $validStatuses)) {
             return redirect()->back()->with('error', 'Status tidak valid');
         }
         
-        // Get the order
         $order = $this->orderModel->find($orderId);
         
         if (!$order) {
             return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
         }
         
-        // Verify permission
         if ($role === 'penyedia') {
             if ($order['id_penyedia'] != $idUser) {
                 return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengubah status pesanan ini');
@@ -410,7 +412,6 @@ class Pages extends BaseController
             }
         }
         
-        // Update the status
         $this->orderModel->update($orderId, [
             'status_pesanan' => $newStatus
         ]);
@@ -452,6 +453,114 @@ class Pages extends BaseController
         ]);
     }
 
+    public function setHarga($orderId)
+    {
+        $session = session();
+        $idUser = $session->get('id_user');
+        $role = $session->get('role');
+        
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+        
+        if ($role !== 'penyedia') {
+            return redirect()->back()->with('error', 'Hanya penyedia jasa yang dapat menetapkan harga');
+        }
+        
+        $harga = $this->request->getPost('harga');
+        
+        if (empty($harga) || $harga <= 0) {
+            return redirect()->back()->with('error', 'Harga harus lebih dari 0');
+        }
+        
+        $db = \Config\Database::connect();
+        
+        $builder = $db->table('orders');
+        $order = $builder
+            ->select('orders.*, services.id_penyedia')
+            ->join('services', 'services.id_service = orders.id_service', 'left')
+            ->where('orders.id_order', $orderId)
+            ->get()
+            ->getRowArray();
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
+        
+        if ($order['id_penyedia'] != $idUser) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menetapkan harga pesanan ini');
+        }
+        
+        $builder->where('id_order', $orderId);
+        $builder->update(['harga_jasa' => floatval($harga)]);
+        
+        return redirect()->back()->with('success', 'Harga berhasil ditetapkan: Rp ' . number_format($harga, 0, ',', '.'));
+    }
+
+    public function bayarOrder($orderId)
+    {
+        $session = session();
+        $idUser = $session->get('id_user');
+        $role = $session->get('role');
+        
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+        
+        if ($role !== 'pengguna') {
+            return redirect()->back()->with('error', 'Hanya pengguna dapat melakukan pembayaran');
+        }
+        
+        $db = \Config\Database::connect();
+        
+        $order = $this->orderModel->find($orderId);
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
+        
+        if ($order['id_pencari'] != $idUser) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk membayar pesanan ini');
+        }
+        
+        if (!$order['harga_jasa'] || $order['harga_jasa'] <= 0) {
+            return redirect()->back()->with('error', 'Harga belum ditetapkan oleh penyedia jasa');
+        }
+        
+        if ($order['status_pesanan'] === 'selesai') {
+            return redirect()->back()->with('info', 'Pesanan ini sudah selesai');
+        }
+        
+        if ($order['status_pesanan'] === 'dibatalkan') {
+            return redirect()->back()->with('error', 'Pesanan ini telah dibatalkan');
+        }
+        
+        $db->transStart();
+        
+        try {
+            $builder = $db->table('orders');
+            $builder->where('id_order', $orderId);
+            $builder->update([
+                'status_pesanan' => 'selesai'
+            ]);
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                return redirect()->back()->with('error', 'Pembayaran gagal diproses');
+            }
+            
+            $hargaFormatted = number_format($order['harga_jasa'], 0, ',', '.');
+            
+            return redirect()->back()->with('success', 'Pembayaran berhasil! Total: Rp ' . $hargaFormatted . '. Pesanan telah selesai.');
+            
+        } catch (\Exception $e) {
+            $db->transRollback();
+            log_message('error', 'Payment error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses pembayaran');
+        }
+    }
+
     public function riwayat()
     {
         $session = session();
@@ -462,38 +571,79 @@ class Pages extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
         
-        $perPage = 20;
-        $builder = $this->orderModel
-            ->select('
-                orders.*,
-                services.judul_jasa,
-                services.gambar_layanan,
-                penyedia.username AS username_penyedia,
-                penyedia.email AS email_penyedia,
-                pencari.username AS username_pencari,
-                pencari.email AS email_pencari
-            ')
-            ->join('services', 'services.id_service = orders.id_service', 'left')
-            ->join('users AS penyedia', 'penyedia.id_user = services.id_penyedia', 'left')
-            ->join('users AS pencari', 'pencari.id_user = orders.id_pencari', 'left');
-        
-        if ($role === 'pengguna') {
-            $builder->where('orders.id_pencari', $idUser);
-        } else {
-            $builder->where('services.id_penyedia', $idUser);
-        }
-        
-        $orders = $builder
-            ->orderBy('orders.tanggal_order', 'DESC')
-            ->paginate($perPage);
-        
-        $pager = $this->orderModel->pager;
+        $orders = $this->orderModel->getOrdersWithReviewStatus($idUser, $role);
         
         return view('pages/riwayat/riwayat', [
             'orders' => $orders,
-            'pager' => $pager,
             'role' => $role
         ]);
+    }
+
+    public function tambahUlasan($orderId)
+    {
+        $session = session();
+        $idUser = $session->get('id_user');
+        $role = $session->get('role');
+        
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+
+        $order = $this->orderModel->find($orderId);
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+        }
+
+        if ($role === 'pengguna' && $order['id_pencari'] != $idUser) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengulas pesanan ini');
+        }
+
+        if ($order['status_pesanan'] !== 'selesai') {
+            return redirect()->back()->with('error', 'Hanya pesanan yang selesai yang dapat diulas');
+        }
+
+        $db = \Config\Database::connect();
+        
+        $existingReview = $db->table('ratings')
+            ->where('id_order', $orderId)
+            ->where('id_penulis', $idUser)
+            ->countAllResults();
+        
+        if ($existingReview > 0) {
+            return redirect()->back()->with('error', 'Anda sudah memberikan ulasan untuk pesanan ini. Setiap pengguna hanya dapat memberikan satu ulasan per pesanan.');
+        }
+
+        $skorBintang = $this->request->getPost('skor_bintang');
+        $ulasanTeks = $this->request->getPost('ulasan_teks');
+
+        if (!$skorBintang || $skorBintang < 1 || $skorBintang > 5) {
+            return redirect()->back()->with('error', 'Rating harus antara 1-5 bintang');
+        }
+
+        if (!$ulasanTeks || strlen(trim($ulasanTeks)) < 10) {
+            return redirect()->back()->with('error', 'Ulasan minimal 10 karakter');
+        }
+
+        if (strlen(trim($ulasanTeks)) > 500) {
+            return redirect()->back()->with('error', 'Ulasan maksimal 500 karakter');
+        }
+
+        $data = [
+            'id_order' => $orderId,
+            'id_penulis' => $idUser,
+            'skor_bintang' => intval($skorBintang),
+            'ulasan_teks' => trim($ulasanTeks),
+            'tanggal_ulasan' => date('Y-m-d')
+        ];
+
+        try {
+            $db->table('ratings')->insert($data);
+            return redirect()->back()->with('success', 'Terima kasih! Ulasan Anda berhasil ditambahkan');
+        } catch (\Exception $e) {
+            log_message('error', 'Error adding review: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan ulasan. Silakan coba lagi.');
+        }
     }
 
     // ==================== ANALYTICS ====================
@@ -528,9 +678,12 @@ class Pages extends BaseController
             ];
         }
 
+        $ratings = $this->ratingModel->getRatingsByService($idService);
+
         return view('pages/penyedia/analisis', [
             'service' => $service,
-            'analytic' => $analytic
+            'analytic' => $analytic,
+            'ratings' => $ratings
         ]);
     }
 
