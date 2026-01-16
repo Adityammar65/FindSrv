@@ -19,7 +19,7 @@ class Pages extends BaseController
     
     private const MAX_CATEGORIES = 3;
     private const MAX_FILE_SIZE = 5120;
-    private const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    private const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const UPLOAD_PATH = 'uploads/jasa';
 
     public function __construct()
@@ -699,14 +699,20 @@ class Pages extends BaseController
 
         $file = $this->request->getFile($fieldName);
 
-        if (!$file || !$file->isValid()) {
+        if (!$file) {
             return $result;
         }
 
-        if ($file->getSize() > (self::MAX_FILE_SIZE * 1024)) {
-            $result['error'] = true;
-            $result['message'] = 'Ukuran file maksimal ' . self::MAX_FILE_SIZE . ' KB';
+        if ($file->getError() === UPLOAD_ERR_NO_FILE) {
             return $result;
+        }
+
+        if ($file->getError() !== UPLOAD_ERR_OK) {
+            return [
+                'error' => true,
+                'message' => $file->getErrorString(),
+                'filename' => null
+            ];
         }
 
         if (!in_array($file->getMimeType(), self::ALLOWED_IMAGE_TYPES)) {
