@@ -37,6 +37,8 @@ git clone https://github.com/Adityammar65/FindSrv.git
 cd FindSrv
 ```
 
+Jika menggunakan XAMPP silahkan clone di htdocs.
+
 ### 2. Install Dependency
 
 Pastikan **Composer** sudah terpasang, lalu jalankan:
@@ -55,13 +57,7 @@ cp .env.example .env
 
 Atur konfigurasi database dan setting lain di file `.env`.
 
-### 4. Migrasi Database (Jika Ada)
-
-```bash
-php spark migrate
-```
-
-### 5. Jalankan Server
+### 4. Jalankan Server
 
 ```bash
 php spark serve
@@ -71,6 +67,12 @@ Akses aplikasi melalui browser:
 
 ```
 http://localhost:8080
+```
+
+Atau jika menggunakan XAMPP:
+
+```
+http://localhost/FindSrv/Public/
 ```
 
 ---
@@ -100,12 +102,11 @@ Silakan lihat file `LICENSE` untuk informasi lebih lanjut.
 ## 🤝 Kontribusi
 
 Dikembangkan oleh:
-**
-Aditya Ammar Al Haqqi 24.02.1095
-Arif Alvian 24.02.1081
-Reskal Muhamat Saputra 24.02.1074
-Luthfi Fajar Prasetyo 24.02.1108
-**
+
+- **Aditya Ammar Al Haqqi 24.02.1095**
+- **Arif Alvian 24.02.1081**
+- **Reskal Muhamat Saputra 24.02.1074**
+- **Luthfi Fajar Prasetyo 24.02.1108**
 
 GitHub: https://github.com/Adityammar65
 
