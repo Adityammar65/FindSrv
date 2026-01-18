@@ -172,6 +172,7 @@ if (isset($order['id_service'])) {
                     <p class="text-center text-muted">Belum ada pesan. Mulai percakapan!</p>
                 <?php else: ?>
                     <?php foreach ($chats as $chat): ?>
+                        <!-- Message from Pengguna -->
                         <?php if (!empty($chat['pesan_pengguna'])): ?>
                             <div class="message-wrapper <?= $role === 'pengguna' ? 'pengguna' : 'penyedia' ?>">
                                 <div class="bubble">
@@ -184,7 +185,8 @@ if (isset($order['id_service'])) {
                         <?php endif; ?>
 
                         <!-- Message from Penyedia -->
-                        <   <div class="message-wrapper <?= $role === 'penyedia' ? 'pengguna' : 'penyedia' ?>">
+                        <?php if (!empty($chat['pesan_penyedia'])): ?>
+                            <div class="message-wrapper <?= $role === 'penyedia' ? 'pengguna' : 'penyedia' ?>">
                                 <div class="bubble">
                                     <?= esc($chat['pesan_penyedia']) ?>
                                 </div>
@@ -253,7 +255,7 @@ if (isset($order['id_service'])) {
 
     <script>
         // Auto-scroll to bottom of chat
-        consUTO-SCROLL TO BOTTOM OF CHATentById('chatBox');
+        const chatBox = document.getElementById('chatBox');
         chatBox.scrollTop = chatBox.scrollHeight;
     </script>
 
