@@ -288,9 +288,13 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </nav>
 
         <!-- PESANAN MASUK -->
+        <h5 class="fw-bold m-4 mx-5">Pesanan Masuk</h5>
+         <?php if (empty($orders)): ?>
+            <div class="alert alert-info">
+                Kamu belum memiliki pesanan.
+            </div>
+        <?php else: ?>
         <div class="container my-4">
-            <h5 class="fw-bold mb-4">Pesanan Masuk</h5>
-
             <div class="row g-3 g-md-4">
                 <?php foreach ($orders as $order): ?>
                     <div class="col-12 col-md-6 col-lg-4 <?php if ($order['status_pesanan'] === 'dibatalkan' || $order['status_pesanan'] === 'selesai') echo 'd-none'; ?>">
@@ -361,6 +365,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         </div>
                     </div>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -409,7 +414,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
     <div class="modal fade" id="hargaModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <form method="post" action="<?= base_url('order/setHarga/' . $order['id_order']) ?>">
+                <form method="post" id="hargaForm" action="">
                     <?= csrf_field() ?>
                     <div class="modal-header">
                         <h5 class="modal-title">Tentukan Harga</h5>
@@ -432,5 +437,15 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         </div>
     </div>
+
+    <script>
+        const hargaModal = document.getElementById('hargaModal');
+        hargaModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const orderId = button.getAttribute('data-order');
+            const form = document.getElementById('hargaForm');
+            form.action = '<?= base_url("order/setHarga/") ?>' + orderId;
+        });
+    </script>
 </body>
 </html>
