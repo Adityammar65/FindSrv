@@ -250,71 +250,6 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
             </div>
         <?php endif; ?>
 
-        <!-- RATING MODALS -->
-        <?php foreach ($orders as $order): ?>
-            <?php if ($order['status_pesanan'] === 'selesai'): ?>
-                <div class="modal fade" id="ulasanModal<?= $order['id_order'] ?>" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <form method="POST" action="<?= base_url('ulasan/tambah/' . $order['id_order']) ?>">
-                                <?= csrf_field() ?>
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Beri Ulasan</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <h6 class="fw-bold"><?= esc($order['judul_jasa']) ?></h6>
-                                        <small class="text-muted">Penyedia: <?= esc($order['username_penyedia']) ?></small>
-                                    </div>
-                                    <hr>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Rating <span class="text-danger">*</span></label>
-                                        <div class="star-rating">
-                                            <input type="radio" id="star5-<?= $order['id_order'] ?>" name="skor_bintang" value="5" required>
-                                            <label for="star5-<?= $order['id_order'] ?>" title="5 bintang">★</label>
-                                            
-                                            <input type="radio" id="star4-<?= $order['id_order'] ?>" name="skor_bintang" value="4">
-                                            <label for="star4-<?= $order['id_order'] ?>" title="4 bintang">★</label>
-                                            
-                                            <input type="radio" id="star3-<?= $order['id_order'] ?>" name="skor_bintang" value="3">
-                                            <label for="star3-<?= $order['id_order'] ?>" title="3 bintang">★</label>
-                                            
-                                            <input type="radio" id="star2-<?= $order['id_order'] ?>" name="skor_bintang" value="2">
-                                            <label for="star2-<?= $order['id_order'] ?>" title="2 bintang">★</label>
-                                            
-                                            <input type="radio" id="star1-<?= $order['id_order'] ?>" name="skor_bintang" value="1">
-                                            <label for="star1-<?= $order['id_order'] ?>" title="1 bintang">★</label>
-                                        </div>
-                                        <small class="text-muted">Klik bintang untuk memberi rating</small>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Ulasan <span class="text-danger">*</span></label>
-                                        <textarea name="ulasan_teks" 
-                                                class="form-control" 
-                                                rows="4" 
-                                                placeholder="Ceritakan pengalaman Anda dengan jasa ini..."
-                                                required
-                                                minlength="10"
-                                                maxlength="500"></textarea>
-                                        <small class="text-muted">Minimal 10 karakter, maksimal 500 karakter</small>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                        Batal
-                                    </button>
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-send"></i> Kirim Ulasan
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-        <?php endforeach; ?>
-
         <!-- FOOTER -->
         <footer class="bg-dark mt-3 pt-5 fade-in-fwd">
             <div class="container">
@@ -356,6 +291,71 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         </footer>
     </div>
 
+    <!-- RATING MODALS -->
+    <?php foreach ($orders as $order): ?>
+        <?php if ($order['status_pesanan'] === 'selesai'): ?>
+            <div class="modal fade" id="ulasanModal<?= $order['id_order'] ?>" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="POST" action="<?= base_url('ulasan/tambah/' . $order['id_order']) ?>">
+                            <?= csrf_field() ?>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Beri Ulasan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <h6 class="fw-bold"><?= esc($order['judul_jasa']) ?></h6>
+                                    <small class="text-muted">Penyedia: <?= esc($order['username_penyedia']) ?></small>
+                                </div>
+                                <hr>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Rating <span class="text-danger">*</span></label>
+                                    <div class="star-rating">
+                                        <input type="radio" id="star5-<?= $order['id_order'] ?>" name="skor_bintang" value="5" required>
+                                        <label for="star5-<?= $order['id_order'] ?>" title="5 bintang">★</label>
+                                        
+                                        <input type="radio" id="star4-<?= $order['id_order'] ?>" name="skor_bintang" value="4">
+                                        <label for="star4-<?= $order['id_order'] ?>" title="4 bintang">★</label>
+                                        
+                                        <input type="radio" id="star3-<?= $order['id_order'] ?>" name="skor_bintang" value="3">
+                                        <label for="star3-<?= $order['id_order'] ?>" title="3 bintang">★</label>
+                                        
+                                        <input type="radio" id="star2-<?= $order['id_order'] ?>" name="skor_bintang" value="2">
+                                        <label for="star2-<?= $order['id_order'] ?>" title="2 bintang">★</label>
+                                        
+                                        <input type="radio" id="star1-<?= $order['id_order'] ?>" name="skor_bintang" value="1">
+                                        <label for="star1-<?= $order['id_order'] ?>" title="1 bintang">★</label>
+                                    </div>
+                                    <small class="text-muted">Klik bintang untuk memberi rating</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Ulasan <span class="text-danger">*</span></label>
+                                    <textarea name="ulasan_teks" 
+                                            class="form-control" 
+                                            rows="4" 
+                                            placeholder="Ceritakan pengalaman Anda dengan jasa ini..."
+                                            required
+                                            minlength="10"
+                                            maxlength="500"></textarea>
+                                    <small class="text-muted">Minimal 10 karakter, maksimal 500 karakter</small>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-send"></i> Kirim Ulasan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    
     <style>
     .star-rating {
         display: flex;
