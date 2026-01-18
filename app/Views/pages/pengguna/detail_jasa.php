@@ -170,7 +170,8 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         </div>
 
                         <!-- Ratings List -->
-                        <   <div class="mb-3 pb-3 border-bottom">
+                        <?php if ($totalRatings > 0): ?>
+                            <div class="mb-3 pb-3 border-bottom">
                                 <small class="fw-bold d-block mb-2">Ulasan Pelanggan</small>
                                 <div class="ratings-list" style="max-height: 200px; overflow-y: auto;">
                                     <?php foreach (array_slice($ratings, 0, 5) as $rating): ?>
@@ -205,9 +206,10 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
                         <?php endif; ?>
 
                         <!-- Action Buttons -->
-                        <   Pesan Jasa
+                        <button type="button" class="btn btn-primary fw-bold w-100" data-bs-toggle="modal" data-bs-target="#pesanJasaModal">
+                            Pesan Jasa
                         </button>
-                        <a href="<?= base_url('pencarian') ?>" class="btn btn-primary fw-bold mt-2 w-100">
+                        <a href="<?= base_url('pencarian') ?>" class="btn btn-outline-primary fw-bold mt-2 w-100">
                             Kembali
                         </a>
                     </div>
@@ -295,7 +297,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
 
     <style>
         /* Ratings List Scrollbar */
-        .ratATINGS LIST SCROLLBARrollbar {
+        .ratings-list::-webkit-scrollbar {
             width: 5px;
         }
 
@@ -314,7 +316,7 @@ $profilePhoto = $photo && file_exists(FCPATH . 'uploads/profile/' . $photo)
         }
 
         /* Responsive adjustments */
-        @medESPONSIVE ADJUSTMENTS {
+        @media (max-width: 991px) {
             .sticky-top {
                 position: relative !important;
                 top: auto !important;
